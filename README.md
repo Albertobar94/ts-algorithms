@@ -24,73 +24,44 @@ Every note follows the same order — the order you'd use on a real problem:
 
 ---
 
-## "Fast" vs "slow" — Big-O without the math
+## How slow is too slow? (Big-O, no math)
 
-You'll see things like `O(n)` and `O(n²)`. You don't need the math — just a feel for how the work grows as the list gets bigger. In code terms:
+Big-O answers one question: **when the list gets bigger, how fast does the work pile up?** You're comparing the _shape_ of the code, not crunching numbers.
 
-| You'll see | What it is in code | When the list **doubles** |
+| Shape of code | Name | Steps for 1,000 items |
 |---|---|---|
-| **O(1)** | no loop — one direct step (`arr[0]`, look up a key) | nothing changes — always instant |
-| **O(log n)** | each step throws away **half** what's left (like "higher / lower" guessing) | barely grows — a million items finishes in ~20 steps |
-| **O(n)** | one `for` loop over the list | work doubles too — fine |
-| **O(n log n)** | sort first, then one loop | a bit more than doubles — the realistic target for most problems |
-| **O(n²)** | a `for` loop **inside** another (compare everything to everything) | work goes up **4×** — falls apart on big lists |
+| Grab one item directly (`arr[0]`, look up a key) | **O(1)** | 1 |
+| Cut what's left in half each step (like "higher / lower" guessing) | **O(log n)** | ~10 |
+| One loop through the list | **O(n)** | 1,000 |
+| Sort it, then one loop | **O(n log n)** | ~10,000 |
+| A loop inside a loop (check every pair) | **O(n²)** | 1,000,000 |
 
-**Why this is the first thing to check:** the problem almost always tells you the input size. If it says *"up to 100,000 items,"* the loop-inside-a-loop (`O(n²)`) version is ~10 billion steps — too slow. That line isn't decoration; it's the hint that a smarter trick exists. Pick your target speed **before** you write code.
+Same list — the loop-in-a-loop does a **million** steps where a single loop does a **thousand**.
+
+**Use it like this:** the problem tells you the list size. Big list (100,000+)? The loop-in-a-loop is out — reach for a faster shape. Decide this **before** you write code.
 
 ---
 
-## Map of tricks
+## The building blocks
 
-Arrows mean **"this one = the one above it, plus one extra rule."** Sliding Window is just Two Pointers with a rule for moving the markers, so it nests under it. Folders match the map.
+The tricks are built out of these. Plain words:
 
-```mermaid
-graph TD
-    TP[Two Pointers: two markers walking a list] --> SW[Sliding Window]
-    TP --> FS[Fast & Slow Pointers]
-    TP --> CP[Two Markers From Both Ends]
-    TP --> M2[Merge Two Sorted Lists]
+| Thing | Plain meaning | In JS/TS you'd use |
+|---|---|---|
+| **Array / list** | items in a row, reached by position | `[]`, `arr[i]` |
+| **Hash map** | a labelled drawer — store and find by name, instantly | `Map` or a plain object `{}` |
+| **Set** | a bag that ignores duplicates — "have I seen this before?" | `Set` |
+| **Stack** | a pile — add and remove from the **top** only (last in, first out) | `arr.push()` / `arr.pop()` |
+| **Queue** | a line — add at the back, remove from the **front** (first in, first out) | `arr.push()` / `arr.shift()` |
+| **Heap** | a bag that always hands you the smallest (or biggest) item next | a priority-queue library |
+| **Tree** | a branching chart — one root, each node points to its children | nodes with a `children` list |
+| **Graph** | dots joined by lines; a tree without the "one parent" rule | a map of node → its neighbours |
 
-    BS[Binary Search: keep halving] --> SA[Guess-and-Check the Answer]
-    BS --> RA[Search a Rotated List]
+---
 
-    HASH[Hashing: a lookup table] --> FC[Counting Things]
-    HASH --> TS[Two Sum]
-    HASH --> AG[Grouping Anagrams]
+## The tricks (and where they live)
 
-    ST[Stack: last-in first-out pile] --> MS[Monotonic Stack]
-    ST --> PM[Matching Brackets]
-
-    HEAP[Heap: always-pop-the-smallest box] --> TK[Top-K]
-    HEAP --> MK[Merge K Lists]
-    HEAP --> TH[Running Median]
-
-    RB[Recursion & Backtracking: try, undo, try again] --> SP[All Subsets / Orderings]
-    RB --> CS[Puzzle Solving]
-    RB --> MEMO[Remember Past Answers]
-    MEMO -.turns into.-> DP
-
-    DP[Dynamic Programming: build on smaller answers] --> D1[1-D]
-    DP --> D2[Grid]
-    DP --> KS[Pick Items Under a Limit]
-    DP --> IV[Ranges]
-
-    GR[Graphs: dots connected by lines] --> GBFS[Explore Ring by Ring]
-    GR --> GDFS[Explore One Path Deep]
-    GR --> TOPO[Order by Dependencies]
-    GR --> UF[Who's Connected to Who]
-    GR --> SHP[Cheapest Path]
-
-    TR[Trees: a branching family chart] --> TDFS[Go Deep]
-    TR --> TBFS[Go Level by Level]
-    TR --> BST[Sorted Tree]
-```
-
-Helpers that show up _inside_ many of these: **Prefix Sum** (running totals), **Intervals** (start/end ranges), **Bit Manipulation** (toggling 0s and 1s), **Greedy** (grab the best-looking option right now).
-
-### Folders match the map
-
-Each leaf is a folder with its own `README.md`. The parent trick is the folder; variations nest inside.
+Folders mirror the hierarchy: a trick nested inside another is **built on it** — Sliding Window lives inside `two-pointers/` because it's just two markers plus a rule for moving them. Each leaf is a folder with its own note.
 
 ```text
 two-pointers/
@@ -136,7 +107,19 @@ bit-manipulation/
 greedy/
 ```
 
+Helpers that show up _inside_ many of these: **Prefix Sum** (running totals), **Intervals** (start/end ranges), **Bit Manipulation** (toggling 0s and 1s), **Greedy** (grab the best-looking option right now).
+
 **Rule:** each trick lives in **one** folder. Fits two families? Pick the real parent and **link** from the other — never copy.
+
+---
+
+## Notes
+
+The table of contents — and a recognition lookup. Add a row when you write a note.
+
+| Trick | Folder | Reach for it when you see… |
+|---|---|---|
+| _none yet_ | — | — |
 
 ---
 
@@ -203,6 +186,20 @@ Two unrelated problems, same trick — this is what wires recognition.
 
 ---
 
+## Universal traps (check these every time)
+
+Before you call any solution done, run the list that bites everyone:
+
+- **Empty input** — zero items. Does the loop still return something sane?
+- **One item** — many two-pointer / window bugs only show up here.
+- **All duplicates / all the same value** — breaks "find the unique one" assumptions.
+- **Already sorted, or reverse-sorted** — often the best and worst case at once.
+- **Off-by-one** — is the end index included or not? Pick one rule and hold it everywhere.
+- **Negatives / zero** — running totals and "grow the window" logic often assume positives.
+- **Huge input** — does the O(n²) version blow the time limit? (see [Big-O](#how-slow-is-too-slow-big-o-no-math))
+
+---
+
 ## Questions that work on almost anything
 
 When unsure what to ask, these scope fast and signal experience:
@@ -217,3 +214,14 @@ When unsure what to ask, these scope fast and signal experience:
 | "Data all up front, or streaming in?" | Streaming needs different tools. |
 
 **Don't** re-ask what the prompt says, or ask "what approach should I use?" Restate the problem in your own words first — that alone catches half the misunderstandings.
+
+---
+
+## How to practice
+
+The notes only build recognition if you **quiz yourself** — not re-read:
+
+1. Pick a problem. Before solving, read only its **"Spot it"** clues and guess the trick.
+2. Cover the recipe and rebuild the steps from memory; peek only when stuck.
+3. Found the trick in real code (a PR, a library)? Add it as a third "disguise" in that note.
+4. Got one wrong? That note's **"Spot it"** is missing a clue — add the one that would've tipped you off.
