@@ -1,14 +1,29 @@
-# Divide by doubling (binary long division)
+# Divide by doubling
 
 ## 1. What it is
-Division using only `+`, `−`, and comparisons: **build the quotient out of powers of
-two** by doubling the divisor, grabbing the biggest doubled chunk that still fits,
-and repeating on what's left.
+Dividing `dividend ÷ divisor` is really one question: **how many times does the
+divisor fit inside the dividend?** Here you must answer it using only `+`, `−`, and
+comparisons — no `*`, `/`, or `%`.
 
-> Built on: **Bit Manipulation** (doubling/halving = `×2` / `÷2`). The extra rule:
-> don't subtract the divisor one at a time — subtract `divisor × 2^k`, the largest
-> chunk that fits, and credit `2^k` to the answer. The quotient assembles itself as a
-> sum of powers of two (e.g. `14 = 8 + 4 + 2`).
+The slow way: subtract the divisor over and over and count. For `43 ÷ 3` that's
+3, 6, 9, … one step at a time — up to billions of steps for big numbers.
+
+The trick: count in **doubling jumps** instead of one at a time. Start with one
+divisor, then keep doubling it — 1 divisor, then 2, then 4, then 8, … (each jump is
+just the previous one added to itself). Every round, take the **biggest jump that
+still fits** in what's left, subtract it, write down how many divisors that jump was
+worth, then repeat on the leftover.
+
+`43 ÷ 3`, round by round:
+- `24` (that's 8 threes) fits in 43 → leftover `19`
+- `12` (4 threes) fits in 19 → leftover `7`
+- `6` (2 threes) fits in 7 → leftover `1`
+- `1` is smaller than 3 → stop. Answer = `8 + 4 + 2 = 14`.
+
+> Built on: **Bit Manipulation** (doubling a number = `×2`). The one idea: don't
+> subtract the divisor one at a time — subtract it in big doubling jumps (1×, 2×, 4×,
+> 8× the divisor, always the biggest that fits) and add up how many divisors each jump
+> was worth. Those counts add up to the answer.
 
 ## 2. Spot it
 **In a problem:**
