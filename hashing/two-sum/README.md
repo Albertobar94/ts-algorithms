@@ -1,49 +1,60 @@
-# Two Sum — the "have I seen what I need?" table
+# Two Sum — "have I seen the partner I need?" (hashmap)
 
-## 1. What it is
-A single loop **plus a hashmap that remembers what you've already seen** — so the
-answer becomes one instant lookup instead of a second loop.
+## TL;DR
 
-> Built on: **Hashing** (a lookup table). The extra rule: as you walk the list once,
-> write down each item you've seen; before moving on, ask the table for the exact
-> partner you still need.
+**Is it the hashmap trick? Ask these — all "yes" → yes:**
+1. **Am I looking for a pair / a match / "have I seen this" / a duplicate?** The job is to connect one item to another item.
+2. **Is the data UNsorted?** If it were sorted, two converging pointers would do it in `O(1)` space — that's a different trick.
+3. **For each item, can I name the EXACT partner I need (e.g. `target − x`) and ask a lookup table for it in one step?** If you can write down what you're looking for and check for it instantly, this is it. **This one is the decider.**
 
-> ⚖️ **Sorted input? Don't reach for this.** If the array is already sorted, two
-> converging pointers solve the same pair-sum in **O(1)** space — see the sibling note
-> [`two-pointers/two-markers-both-ends`](../../two-pointers/two-markers-both-ends/README.md).
-> The hashmap is what an **unsorted** input forces. Same question, different trick.
+**Before you code, pin down:** exactly one answer, or could there be many / none? may I reuse the same element? (Two Sum: no.) do you want the **indices** or the **values**?
 
-## 2. Spot it
-**In a problem:**
-- "find two things that add up to `X`" → the partner you need is `X − current`.
-- "is there a duplicate?", "first repeated item", "have we seen this before?".
-- You catch yourself wanting to **loop a second time just to look something up** — that itch is the tell.
+**The line where bugs hide** (details in *How it works*): **CHECK the table for the partner *before* you STORE the current item.** Storing first lets a number pair with itself — and storing-as-you-go is also exactly why a real duplicate like `[3,3]` still works. Key the table by **value → index**.
 
-**In real code** (reviewing a PR — any stack):
-- Frontend: deduping a list by `id` with a `Set`/`Map` before render; memo caches keyed by input; "have I already fetched this?" guards.
-- Backend: idempotency / replay protection (store processed request IDs, reject if seen); counting occurrences (`counts[key] = (counts[key] ?? 0) + 1`); joining two datasets by key instead of a nested loop.
-- Smell test: a nested loop whose **inner loop only hunts for one matching value** → replace the inner loop with a hashmap. O(n²) → O(n).
+---
 
-## 3. What you track
-- one hashmap (`Map` or plain object): **key = the thing you've seen**, value = what you want back.
-- pairs that sum to a target → `seen[value] = index`.
-- duplicate detection → a `Set` of seen keys (you only need "yes/no").
+## What it is
+Walk the list **once**. As you go, keep a lookup table of everything you've already
+seen. Before moving past an item, ask the table for the **exact partner you need** — so
+the answer is one instant lookup instead of a whole second loop. The table answers in
+one step (`O(1)`), so the entire thing is one pass (`O(n)`).
 
-## 4. How it works
-Recipe (Two Sum):
-> 1. Make an empty table `seen`.
-> 2. Walk the list one number at a time.
-> 3. The partner you need for the current number is `target − number`.
-> 4. If `seen` already holds that partner → done, return both positions.
-> 5. Otherwise write down `number → its index` in `seen`, and move on.
-> 6. One pass. No second loop.
+`nums = [2, 7, 11, 15]`, `target = 9`:
+- `x = 2`, partner needed is `9 − 2 = 7`. Table empty → not there. Store `2 → index 0`.
+- `x = 7`, partner needed is `9 − 7 = 2`. Table has `2` at index `0` → found it. Return `[0, 1]`.
 
-**Why one pass is enough (the part that trips people up):** you check *before* you
-store. If a valid pair exists, the **second** number of that pair is the one that
-finds the **first** (already sitting in the table). So you never miss a pair, and you
-never accidentally pair a number with itself.
+## What you track
+- `seen` — one hashmap (`Map`), **key = a value you've seen, value = the index it was at**.
+- For pure duplicate detection you don't need the index, only "yes/no" — a `Set` is enough.
 
-## 5. Picture
+## How it works
+Pseudocode. The one ⚠️ line is where every bug in this trick lives — read it slowly;
+the rest is filler.
+
+```
+seen = empty table            // value -> index
+
+for i, x in nums:
+    need = target - x         // the exact partner that completes the pair
+
+    if need is in seen:        // ⚠️ CHECK before you STORE.
+        return [seen[need], i] //    Storing x first would let x pair with ITSELF,
+                               //    and would break the honest [3,3] case below.
+
+    seen[x] = i               // only now record the current item and move on
+
+// fell through → no pair exists (LeetCode guarantees one, so this never hits)
+```
+
+Why one pass can't miss a pair: you check *before* you store, so the **second** number
+of a valid pair is the one that finds the **first** (already sitting in the table). And
+`[3,3]` works *because* you store as you go — the first `3` is in the table by the time
+you reach the second.
+
+Lock this in and it can't pair a number with itself or miss a duplicate:
+**check the table for `need` BEFORE storing the current item; key by value → index.**
+
+## Picture
 ```mermaid
 flowchart TD
     A[seen = empty table] --> B[take next number x]
@@ -53,40 +64,22 @@ flowchart TD
     E --> B
 ```
 
-## 6. Two disguises
-Same trick, two problems that look unrelated.
+## Where you'll meet it (practice + recognition)
 
-- **A — LeetCode #1 Two Sum** (numbers): given `nums` and `target`, return the indices
-  of the two numbers that add up to `target`. Mapping: the table is `value → index`;
-  the "partner I need" is `target − nums[i]`.
-- **B — Webhook replay guard** (backend / streaming): a receiver gets a stream of
-  events, each with an `eventId`. Return the **first event that is a repeat** (a
-  replay attack), or `null` if all are unique. Mapping: same table, used as a `Set`
-  of seen ids — for each event, "have I seen this id?" The "partner I need" is just
-  *the same id again*. Different story (security), identical trick at its core:
-  **a hashmap so each "have I seen it?" is instant.**
+**On LeetCode (and similar platforms):**
+- **#1 Two Sum** — return the indices of the two numbers that add up to `target` (this note's code). Partner needed is `target − nums[i]`; table is `value → index`.
+- **#217 Contains Duplicate** — is any value repeated? Walk once, store each value in a `Set`; if it's already there, that's your duplicate. Partner needed is *the same value again*.
+- **#242 Valid Anagram** — count letters of one word into a table (`letter → count`), then check the other word draws those counts back down to zero. Same table, used for **counting** instead of pairing.
 
-## 7. Questions to ask
-Only the trick-specific ones (generic scoping lives in the repo README):
-- "Exactly one answer, or could there be many / none?"
-- "Can I reuse the same element?" (Two Sum: no.)
-- "Can values be negative or huge?" (a hashmap shrugs — a counting *array* would not.)
-- "Do you want the indices, or the values themselves?"
+**Real life / other platforms:**
+- **Dedupe by id** — filter a list down to unique items by keeping a `Set`/`Map` of ids you've already emitted.
+- **Webhook replay / idempotency guard** — store every processed request id; if an incoming id is already seen, reject it (someone replayed the event). The "partner" is just the same id again.
+- **Joining two datasets by key** — index one side into a `Map` by key, then look each row of the other side up in one step, instead of a nested loop. `O(n²)` → `O(n)`.
 
-## 8. Go faster
-- Skeleton you keep ready:
-  ```ts
-  const seen = new Map<number, number>();
-  for (let i = 0; i < nums.length; i++) {
-    const need = target - nums[i];
-    if (seen.has(need)) return [seen.get(need)!, i];
-    seen.set(nums[i], i);
-  }
-  ```
-- Invariant: **every item before the current one is already in `seen`.**
-- Trick-specific bugs: storing *before* checking (lets a number match itself); the
-  duplicate case like `[3,3]` (works only because you store as you go).
-- Say the cost out loud first: **"O(n) time, O(n) space, one pass."**
+**Looks like it but ISN'T:** if the array is **SORTED**, don't build a table — walk two
+pointers inward from both ends, `O(1)` space: see [`two-pointers/two-markers-both-ends`](../../two-pointers/two-markers-both-ends/README.md).
+Same question ("two things that sum to a target"), different trick — picked purely by
+whether the input is sorted.
 
 ---
 

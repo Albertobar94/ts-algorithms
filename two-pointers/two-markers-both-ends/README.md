@@ -1,49 +1,71 @@
 # Two markers from both ends
 
-## 1. What it is
-Two pointers, **one at each end of a sorted (or symmetric) list**, walking toward
-the middle. Each step you compare, then move the side that gets you closer.
+## TL;DR
 
-> Built on: **Two Pointers**. The extra rule: the markers start at opposite ends
-> and move *inward*; a comparison decides which one moves. This only works when the
-> data has order or symmetry — that's what makes the comparison meaningful.
+**Is it the both-ends trick? Ask these — all yes → yes:**
+1. **Is the data sorted (or symmetric)?** Either ordered small→large, *or* something you can read from both sides (a string, a palindrome). (No order, no symmetry → not this.)
+2. **Am I after a pair, or comparing the two ends?** Two numbers that sum to `X`, or "do the ends match / how much fits between them" (palindrome, max area). (Comparing one item to a target → that's binary search.)
+3. **Does comparing the two ends tell me which end to move next?** Look at both ends — does the result say "move the left in" or "move the right in"? If the comparison doesn't point at a side to drop → not this. **This one is the decider.**
 
-> ⚖️ **Unsorted input? This breaks.** The trick leans entirely on order. If the array
-> isn't sorted, reach for the hashmap sibling
-> [`hashing/two-sum`](../../hashing/two-sum/README.md) instead. Same question (Two Sum),
-> different trick — picked by whether the input is sorted.
+**Before you code, pin down:** is the input sorted — ascending or descending? is the answer 1-indexed or 0-indexed (LeetCode #167 is **1-indexed** — the classic slip)? exactly one pair, or all pairs (all → you must skip duplicates)? for palindrome — which characters count, and is it case-sensitive?
 
-## 2. Spot it
-**In a problem:**
-- a **sorted** array + "find a pair (or triplet) that sums to `X`".
-- "is it a palindrome?", "reverse it in place", "most water / max area between two walls".
-- the giveaway: being sorted means *too big → shrink from the right; too small → grow from the left.*
+**The lines where bugs hide** (details in *How it works*):
+`while left < right` (NOT `<=` — that lets you pair an element with itself) · the **1-indexing** on #167 · the data **must** be sorted, or the whole trick is invalid.
 
-**In real code** (reviewing a PR — any stack):
-- Frontend: checking a sequence reads the same both ways (palindrome-style validation); reversing an array in place by swapping ends; trimming junk off both ends of a token list.
-- Backend: a `left = 0 / right = len - 1` loop that shrinks toward the middle — reversing a buffer in place by swapping ends, two-sided trimming of a sorted range until a condition holds, or a max-between-two-ends scan (container-with-most-water style).
-- Smell test: a nested loop over a **sorted** array to find a pair → collapse it to two converging pointers. O(n²) → O(n).
+---
 
-## 3. What you track
-- two indices: `left` (start) and `right` (end).
-- the comparison each step that tells you which pointer to move.
+## What it is
+Put one marker at each end of the list and walk them toward the middle. Each step you
+**compare the two ends**, and the result tells you which marker to move inward. Because
+the data is sorted (or symmetric), that comparison is trustworthy — moving a marker can
+only push the result one known direction, so you never have to look back.
 
-## 4. How it works
-Recipe (Two Sum II — sorted input):
-> 1. Put `left` on the first item, `right` on the last.
-> 2. Add them: `sum = a[left] + a[right]`.
-> 3. `sum === target` → found, return both.
-> 4. `sum < target` → you need a bigger total → move `left` right (to a larger number).
-> 5. `sum > target` → you need a smaller total → move `right` left (to a smaller number).
-> 6. Stop when the markers meet.
+`numbers = [2, 7, 11, 15]`, looking for a pair that sums to `9`:
+- `left=2`, `right=15` → `2 + 15 = 17 > 9` → too big, pull `right` in → `right=11`
+- `left=2`, `right=11` → `2 + 11 = 13 > 9` → still too big, pull `right` in → `right=7`
+- `left=2`, `right=7` → `2 + 7 = 9` → found it. Positions (1-indexed) → `[1, 2]`.
 
-**Why it can't miss a pair (the part worth slowing down for):** because the list is
-sorted, moving `left` right *only raises* the sum and moving `right` left *only
-lowers* it. When the sum is too big, `a[right]` paired with anything still to its left
-is **also** too big — so dropping `right` throws away only impossible options. Each
-step safely discards a whole row of candidates, so one sweep covers them all.
+## What you track
+- `left` — the marker at the start, moving right.
+- `right` — the marker at the end, moving left.
+- the **comparison each step** (sum vs target, or end char vs end char) that decides which marker moves.
 
-## 5. Picture
+## How it works
+Pseudocode (Two Sum II — sorted input). The three ⚠️ lines are where every bug hides —
+read those slowly; the rest is filler.
+
+```
+left  = 0
+right = n - 1                    // ⚠️ the data MUST be sorted. The whole trick rests
+                                 //    on this — on unsorted input the comparison lies
+                                 //    and you'll silently return wrong pairs.
+
+while left < right:              // ⚠️ < , not <= . With <= the two markers can land
+                                 //    on the SAME index and you'd pair an element with
+                                 //    itself — which the problem forbids.
+
+    sum = a[left] + a[right]
+
+    if sum == target:
+        return [left + 1, right + 1]  // ⚠️ +1 — LeetCode #167 wants 1-BASED indices.
+                                      //    Returning [left, right] is the classic slip.
+
+    else if sum < target:
+        left = left + 1          // need a BIGGER total → move left to a larger number
+    else:
+        right = right - 1        // need a SMALLER total → move right to a smaller number
+
+// markers met → no pair (for #167 the problem guarantees one exists)
+```
+
+Why it can't miss a pair: sorted order means moving `left` right *only raises* the sum
+and moving `right` left *only lowers* it. When the sum is too big, `a[right]` paired
+with anything to its left is **also** too big — so dropping `right` discards only
+impossible options. One sweep covers them all.
+
+Lock these three in and it's correct: **data sorted**, **`while left < right`**, **`+1` for 1-indexing on #167**.
+
+## Picture
 ```mermaid
 flowchart TD
     A[left = start, right = end] --> B{left < right?}
@@ -57,38 +79,21 @@ flowchart TD
     H --> B
 ```
 
-## 6. Two disguises
-Same both-ends mechanic, two very different problems.
+## Where you'll meet it (practice + recognition)
 
-- **A — LeetCode #167 Two Sum II (sorted)** (numbers): a **sorted**, 1-indexed array;
-  return the 1-based positions of the pair that sums to `target`. Mapping: compare the
-  end-to-end `sum` against `target` and move the helpful pointer.
-- **B — Valid Palindrome** (text): given a string, ignore non-alphanumeric characters
-  and case — does it read the same forwards and backwards? Mapping: `left` and `right`
-  start at the ends; compare the two characters; **equal → step both inward; different
-  → it's not a palindrome.** Contrast worth noticing: the comparison here is *equality*
-  (move both) instead of *magnitude* (move one). Same skeleton, different decision.
+**On LeetCode (and similar platforms):**
+- **#167 Two Sum II (sorted)** — sorted, 1-indexed array; compare the end-to-end `sum` to `target`, move the helpful marker. (This note's code.)
+- **#125 Valid Palindrome** — compare the two end characters for *equality*: equal → step both inward; different → not a palindrome. Same skeleton, but the comparison moves *both* markers, not one. (See `isPalindrome` in [`solution.ts`](./solution.ts).)
+- **#11 Container With Most Water** — `left` and `right` are two walls; the area is limited by the *shorter* wall, so move the shorter one inward hunting for a taller pair.
+- **#15 3Sum** — sort first, then for each fixed number run the both-ends sweep on the rest to find the other two.
 
-## 7. Questions to ask
-Only the trick-specific ones (generic scoping lives in the repo README):
-- "Is the input guaranteed **sorted**? Ascending or descending?" (the whole trick rests on this.)
-- "Is the answer 1-indexed or 0-indexed?" (LC #167 is **1-indexed** — a classic slip.)
-- "Exactly one pair, or all pairs?" (all pairs → you must skip duplicates.)
-- For palindrome: "Which characters count? Is it case-sensitive?"
+**Real life / other platforms:**
+- Reversing a buffer in place by swapping the two ends and walking inward.
+- Checking a sequence reads the same both ways (palindrome-style validation).
+- Two-sided trimming of a sorted range — chop from both ends until a condition holds.
+- The two cursors converging in a merge step.
 
-## 8. Go faster
-- Skeleton you keep ready:
-  ```ts
-  let left = 0;
-  let right = n - 1;
-  while (left < right) {
-    // compare, then move left++ or right--
-  }
-  ```
-- Invariant: **the answer, if it exists, is always inside `[left, right]`.**
-- Trick-specific bugs: forgetting the input must be sorted; 1- vs 0-indexing; using
-  `left <= right` when you must not pair an element with itself (use `left < right`).
-- Say the cost out loud first: **"O(n) time, O(1) space, one pass from both ends."**
+**Looks like it but ISN'T:** *"two numbers in an **unsorted** array that sum to a target"* — with no order the comparison can't tell you which end to drop, so it's the hashmap [`two-sum`](../../hashing/two-sum/README.md), not this. Same question, different trick — picked by whether the input is sorted.
 
 ---
 
