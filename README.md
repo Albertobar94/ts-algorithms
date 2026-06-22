@@ -78,6 +78,7 @@ The table of contents — and a recognition lookup. Add a row when you write a n
 | Two markers, both ends | [`two-pointers/two-markers-both-ends`](./two-pointers/two-markers-both-ends/) | **sorted** list + "find a pair"; palindrome / reverse-in-place; max area between two walls |
 | Divide by doubling | [`bit-manipulation/divide-two-integers`](./bit-manipulation/divide-two-integers/) | "no `*` `/` `%`"; a count/quotient up to ~2³¹ (too big to loop one-by-one); doubling a step until it overshoots; exponential search |
 | Running total, keep the best | [`prefix-sum/highest-altitude`](./prefix-sum/highest-altitude/) | step-by-step changes + "highest / lowest / peak so far"; running balance / altitude / concurrency; cumulative tally |
+| Binary search (halve a sorted range) | [`binary-search/find-target`](./binary-search/find-target/) | **sorted** data + find a value or a boundary; "first/last position where…"; huge input needing O(log n); `git bisect` |
 
 > The first two rows are the **same question** (Two Sum) under opposite inputs: **sorted → two pointers** (O(1) space), **unsorted → hashmap** (O(n) space). Recognizing *which* is the whole skill.
 

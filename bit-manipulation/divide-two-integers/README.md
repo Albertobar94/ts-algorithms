@@ -94,8 +94,9 @@ Same "double your step until it would overshoot, then commit it" mechanic.
   until `source[bound]` overshoots the target, then binary search the bracket
   `[bound/2, bound]`. The doubling loop is *literally the same move* as `divide`'s
   inner loop — different domain (searching), identical trick. (That second half is the
-  **binary-search** trick — a sibling pattern; see `../../binary-search/` once it's
-  written. Exponential search = this note's doubling **+** binary search, composed.)
+  **binary-search** trick — a sibling pattern; see
+  [`../../binary-search/find-target`](../../binary-search/find-target/README.md).
+  Exponential search = this note's doubling **+** binary search, composed.)
 
 ## 7. Questions to ask
 Only the trick-specific ones (generic scoping lives in the repo README):
