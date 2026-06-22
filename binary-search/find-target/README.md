@@ -47,32 +47,30 @@ Question 3 is the whole game: binary search only works when **one look in the mi
 - (for boundary searches) `answer` — the best position found so far.
 
 ## 4. How it works
-In plain steps — find a value, or learn it isn't there:
+Pseudocode — find a value, or return -1 if it isn't there:
 
 ```
-Keep two markers: LEFT on the first item, RIGHT on the last item.
-The part between them is the range you still have to search.
+left  = first index
+right = last index               // the range still to search is left..right
 
-Repeat as long as LEFT hasn't passed RIGHT:
+while left <= right:
+    mid = middle of left and right
 
-   Look at the item in the MIDDLE of the range.
+    if value[mid] is the target:
+        return mid               // found it
 
-   - If it's the one you want  ->  done. Its position is the answer.
+    if value[mid] < target:      // middle too small → answer is to the right
+        left = mid + 1
+    else:                        // middle too big → answer is to the left
+        right = mid - 1
 
-   - If it's too small         ->  the answer must be further right,
-                                   so move LEFT to just after the middle.
-
-   - If it's too big           ->  the answer must be further left,
-                                   so move RIGHT to just before the middle.
-
-If the range runs out and you never found it, it isn't in the list.
+return -1                        // range emptied, not in the list
 ```
 
-Finding the middle, said carefully:
+The middle, computed safely:
 
 ```
-The middle is halfway between LEFT and RIGHT, rounded down.
-Compute it as  LEFT + (RIGHT - LEFT) / 2  -- same spot, but it can never overflow.
+mid = left + (right - left) / 2  // halfway, rounded down; can never overflow
 ```
 
 **Why `mid + 1` / `mid - 1`, and why `<=` (the part to slow down for):** `mid` was just
