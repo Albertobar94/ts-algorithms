@@ -47,14 +47,31 @@ Question 3 is the whole game: binary search only works when **one look in the mi
 - (for boundary searches) `answer` — the best position found so far.
 
 ## 4. How it works
-Recipe (find a target, return its index or `-1`):
-> 1. `left = 0`, `right = lastIndex`.
-> 2. While `left <= right`:
->    a. `mid = left + ⌊(right − left) / 2⌋`.
->    b. `nums[mid] === target` → return `mid`.
->    c. `nums[mid] < target` → target is to the right → `left = mid + 1`.
->    d. else → target is to the left → `right = mid - 1`.
-> 3. Loop ended → not found, return `-1`.
+Plain pseudocode — find a target, return its index, or `-1` if missing:
+
+```
+left  = 0                      // left edge of the search window
+right = last index             // right edge (inclusive)
+
+while window is not empty (left <= right):
+    mid = the middle of the window
+
+    if item at mid == target:
+        return mid             // found it
+
+    if item at mid < target:
+        left = mid + 1         // target is bigger → keep the RIGHT half
+    else:
+        right = mid - 1        // target is smaller → keep the LEFT half
+
+return -1                      // window emptied, never found it
+```
+
+Finding the middle, written safely:
+
+```
+mid = left + (right - left) / 2     // round down; never overflows, always inside the window
+```
 
 **Why `mid + 1` / `mid - 1`, and why `<=` (the part to slow down for):** `mid` was just
 checked, so re-including it does nothing but risk an **infinite loop** — when the window
