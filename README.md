@@ -58,11 +58,13 @@ recursion-backtracking/  # subsets / orderings, puzzles
 dynamic-programming/     # remember past answers — 1-D, grid, knapsack, ranges
 graphs/                  # BFS, DFS, topological sort, union-find, shortest path
 trees/                   # depth-first, level-order, BST
+bit-manipulation/        # divide by doubling, exponential search
+prefix-sum/              # running totals — highest altitude, peak so far
 ```
 
 Leaf folders (e.g. `two-pointers/sliding-window/`) get created as you write each note.
 
-Helpers that show up _inside_ many of these: **Prefix Sum** (running totals), **Intervals** (start/end ranges), **Bit Manipulation** (toggling 0s and 1s), **Greedy** (grab the best-looking option right now).
+Helpers that show up _inside_ many of these: **Intervals** (start/end ranges), **Greedy** (grab the best-looking option right now).
 
 ---
 
@@ -72,68 +74,64 @@ The table of contents — and a recognition lookup. Add a row when you write a n
 
 | Trick | Folder | Reach for it when you see… |
 |---|---|---|
+| Two Sum (hashmap) | [`hashing/two-sum`](./hashing/two-sum/) | **unsorted** list + "find a pair summing to X"; "have I seen this?"; dedupe by key; replay / idempotency guard |
+| Two markers, both ends | [`two-pointers/two-markers-both-ends`](./two-pointers/two-markers-both-ends/) | **sorted** list + "find a pair"; palindrome / reverse-in-place; max area between two walls |
+| Divide by doubling | [`bit-manipulation/divide-two-integers`](./bit-manipulation/divide-two-integers/) | "no `*` `/` `%`"; a count/quotient up to ~2³¹ (too big to loop one-by-one); doubling a step until it overshoots; exponential search |
+| Running total, keep the best | [`prefix-sum/highest-altitude`](./prefix-sum/highest-altitude/) | step-by-step changes + "highest / lowest / peak so far"; running balance / altitude / concurrency; cumulative tally |
+| Binary search (halve a sorted range) | [`binary-search/find-target`](./binary-search/find-target/) | **sorted** data + find a value or a boundary; "first/last position where…"; huge input needing O(log n); `git bisect` |
+
+> The first two rows are the **same question** (Two Sum) under opposite inputs: **sorted → two pointers** (O(1) space), **unsorted → hashmap** (O(n) space). Recognizing *which* is the whole skill.
 
 ---
 
 ## Note template
 
-Every `<family>/<trick>/README.md` answers these 8, in order. Plain words. Skip nothing.
+Every `<family>/<trick>/README.md` follows this shape. The order is deliberate:
+**questions first** (how to recognize it + what to nail down + where bugs live), the
+**bug-focused pseudocode** in the middle, **real example problems last**. Plain words
+throughout — ground every term, no bare jargon. [`binary-search/find-target`](./binary-search/find-target/)
+is the reference note.
 
 ````markdown
-# <Trick name>
+# <Trick> — <one-line plain gist>
 
-## 1. What it is
-One line: "<parent> plus <the extra rule>."
-(e.g. "Two markers, but the gap between them is a window we grow and shrink under a rule.")
+## TL;DR
 
-## 2. Spot it
-You meet this trick two ways — write the giveaways for both.
+**Is it <trick>? Ask these — all "yes" → yes:**
+1. <recognition question you run on the problem's words>
+2. <next question>
+3. <the decider — the question that really settles it> ← this one is the test.
 
-**In a problem:** the phrases / shapes that should fire it.
-- e.g. "longest run with no repeats", "best 5 in a row", sorted list + "find a pair".
+**Before you code, pin down:** <trick-specific clarifying questions> (generic ones live in the README's question table).
 
-**In real code** (reviewing a PR — any stack): what it looks like written out.
-- Frontend: e.g. a `start` index that only moves forward while scanning events → a window
-  (debounce/throttle buffers, virtualized-list ranges, infinite-scroll page math).
-- Backend: e.g. dropping old timestamps off the front of a list to count recent hits → the
-  same window (rate limiters, log/stream scanning, moving averages).
-- Smell test: is this O(n²) loop-in-a-loop doing work a single pass could?
+**The lines where bugs hide** (details in *How it works*): <the 2–4 bug-critical decisions, one line>.
 
-## 3. What you track
-The variables / data, and why — in terms you know:
-- two indices (`left`, `right`); a running total; an object as a counter (`counts[x]`); a list used as a pile.
+## What it is
+Plain explanation — no jargon, every term grounded — plus a tiny worked example on
+real values. (Optional: a short "things to lock in" list.)
 
-## 4. How it works
-Recipe steps. Someone who can write a `for` loop should follow it:
-> 1. ...
-> 2. ...
+## What you track
+The variables and what each means, in terms you already know.
 
-## 5. Picture
-Mermaid flowchart of the loop and how its state moves:
+## How it works
+Pseudocode — code-like but readable. Put a ⚠️ on **every bug-prone line** with the
+consequence of getting it wrong (off-by-one, infinite loop, wrong seed, overflow…).
+Close with a one-line recap of those bug-critical lines.
 
-```mermaid
-flowchart TD
-    A[start] --> B{rule still holds?}
-    B -- yes --> C[advance, save best]
-    B -- no --> D[shrink / step back]
-    C --> B
-    D --> B
+```
+<pseudocode, with ⚠️ on the lines that cause bugs>
 ```
 
-## 6. Two disguises
-Two unrelated problems, same trick — this is what wires recognition.
-- A (e.g. text): how it maps.
-- B (e.g. money / traffic / scores): same trick, different story.
+## Picture
+Mermaid flowchart of the loop / how its state moves.
 
-## 7. Questions to ask
-Only the **trick-specific** ones here (generic scoping questions live in the README's question table).
-- e.g. "Can the window be empty?", "Are values bounded so I can count them in an array?"
+## Where you'll meet it (practice + recognition)
+- **On LeetCode (and similar):** real problem numbers/names + a one-line mapping each.
+- **Real life / other platforms:** concrete scenarios in any stack (a `git bisect`, a rate limiter, peak concurrency…).
+- **Looks like it but ISN'T:** the nearest sibling trick it gets confused with, and the one question that tells them apart — link the sibling note.
 
-## 8. Go faster
-- The loop skeleton you keep ready to type.
-- The one rule that must stay true every step (the invariant).
-- Bugs **specific to this trick** (the universal ones live in the README's traps list).
-- State the cost out loud first: "O(n), one pass, two markers."
+---
+Solution code (fully commented): [`solution.ts`](./solution.ts).
 ````
 
 ---
@@ -173,7 +171,7 @@ When unsure what to ask, these scope fast and signal experience:
 
 The notes only build recognition if you **quiz yourself** — not re-read:
 
-1. Pick a problem. Before solving, read only its **"Spot it"** clues and guess the trick.
-2. Cover the recipe and rebuild the steps from memory; peek only when stuck.
-3. Found the trick in real code (a PR, a library)? Add it as a third "disguise" in that note.
-4. Got one wrong? That note's **"Spot it"** is missing a clue — add the one that would've tipped you off.
+1. Pick a problem. Before solving, run a note's **TL;DR questions** against it and guess the trick.
+2. Cover the pseudocode and rebuild it from memory; peek only when stuck. Pay attention to the ⚠️ bug lines.
+3. Found the trick in real code (a PR, a library)? Add it under that note's **"Where you'll meet it."**
+4. Got one wrong? That note's **TL;DR test** is missing a question — add the one that would've tipped you off.
