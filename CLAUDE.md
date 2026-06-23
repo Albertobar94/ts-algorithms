@@ -49,6 +49,13 @@ The repo has no TS toolchain yet, so `tsc` can't run. Verify logic by executing 
 type-stripped mirror in node (`/tmp/*.mjs`) covering the LeetCode examples + adversarial
 edges. Every committed solution must pass its checks.
 
+## Guide docs (non-trick)
+
+Some topics are **methods/tooling guides**, not tricks — no recognition test, no
+`solution.ts`. They live at `<topic>/README.md` (e.g. `performance/`) and keep the repo
+voice (plain words, ground every term, tables + ⚠️ on gotchas, depth only on hard
+parts). Link them from the root README near the related concept, not in the Notes table.
+
 ## Git
 
 - Direct push to `main` is blocked by a guard hook — always work on a branch and open a PR.

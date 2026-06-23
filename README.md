@@ -27,6 +27,18 @@ Same list — the loop-in-a-loop does a **million** steps where a single loop do
 
 ---
 
+## Already slow? Find out why (measure, don't guess)
+
+Big-O tells you if code *could* be too slow. When something *is* slow in practice, you
+**profile** — measure to find the actual hot spot instead of guessing. Same process for
+a plain algorithm, a Node/backend service, or a React app; the tools differ.
+
+→ [**Performance debugging guide**](./performance/) — the process, counting an
+algorithm's steps, Node/backend profiling (flamegraphs, event-loop, N+1), and React
+profiling (re-renders, Core Web Vitals).
+
+---
+
 ## The building blocks
 
 The tricks are built out of these. Plain words:
