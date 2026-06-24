@@ -47,17 +47,15 @@ export function findMaxAverage(nums: number[], k: number): number {
     throw new Error("k must be between 1 and nums.length.");
   }
 
-  let windowSum = 0;
-  for (let i = 0; i < k; i++) {
-    windowSum += nums[i]; // seed the first window [0..k-1] before sliding
-  }
+  // Seed the first window [0..k-1] with reduce — one clear expression, O(k).
+  let windowSum = nums.slice(0, k).reduce((sum, n) => sum + n, 0);
 
   let bestSum = windowSum;
   for (let i = k; i < nums.length; i++) {
-    windowSum += nums[i] - nums[i - k]; // add the entrant, drop the leaver
-    if (windowSum > bestSum) {
-      bestSum = windowSum;
-    }
+    // The slide stays explicit: add entrant, drop leaver in O(1). Collapsing this into a
+    // per-window reduce would make it O(n*k) — the slide IS the trick.
+    windowSum += nums[i] - nums[i - k];
+    bestSum = Math.max(bestSum, windowSum);
   }
 
   return bestSum / k; // divide once at the end, not every step
@@ -90,17 +88,12 @@ export function peakBytesInWindow(bytes: number[], windowSize: number): number {
     return 0; // not enough lines for a single full window
   }
 
-  let windowSum = 0;
-  for (let i = 0; i < windowSize; i++) {
-    windowSum += bytes[i];
-  }
+  let windowSum = bytes.slice(0, windowSize).reduce((sum, n) => sum + n, 0);
 
   let peak = windowSum;
   for (let i = windowSize; i < bytes.length; i++) {
-    windowSum += bytes[i] - bytes[i - windowSize];
-    if (windowSum > peak) {
-      peak = windowSum;
-    }
+    windowSum += bytes[i] - bytes[i - windowSize]; // O(1) slide, same as #643
+    peak = Math.max(peak, windowSum);
   }
 
   return peak;

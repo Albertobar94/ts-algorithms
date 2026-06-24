@@ -57,10 +57,8 @@ export function lengthOfLongestSubstring(s: string): number {
       left = prev + 1; // jump past the old copy; prev >= left guarantees we go forward
     }
     lastSeen.set(char, right);
-    const windowLength = right - left + 1; // measure only after the window is valid again
-    if (windowLength > best) {
-      best = windowLength;
-    }
+    // measure only after the window is valid again; +1 because both ends are inclusive
+    best = Math.max(best, right - left + 1);
   }
 
   return best;
@@ -99,10 +97,7 @@ export function longestUniqueEventRun(events: string[]): number {
       left = prev + 1;
     }
     lastSeen.set(event, right);
-    const runLength = right - left + 1;
-    if (runLength > best) {
-      best = runLength;
-    }
+    best = Math.max(best, right - left + 1);
   }
 
   return best;

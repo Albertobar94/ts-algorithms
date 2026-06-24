@@ -168,6 +168,19 @@ Mermaid flowchart of the loop / how its state moves.
 Solution code (fully commented): [`solution.ts`](./solution.ts).
 ````
 
+### Split families (a trick with sibling sub-notes)
+
+When one trick fans out into variants — e.g. `sliding-window/` → `fixed-size/`,
+`variable-distinct/`, `shrink-to-target/` — add two extra pieces so a child note reads on
+its own:
+
+- an **overview README** at the parent folder: the shared idea, the goal, the flavors in a
+  table + a "which one?" guide, and a link to each child — see
+  [`two-pointers/sliding-window`](./two-pointers/sliding-window/);
+- a **context banner** at the very top of each child — a blockquote *between the title and
+  the TL;DR*: "N of M flavors — read the overview first", a one-line "this flavor: …", and
+  the canonical problem — see [`two-pointers/sliding-window/fixed-size`](./two-pointers/sliding-window/fixed-size/).
+
 ---
 
 ## Universal traps (check these every time)

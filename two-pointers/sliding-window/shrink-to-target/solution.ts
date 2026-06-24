@@ -54,11 +54,9 @@ export function minSubArrayLen(target: number, nums: number[]): number {
   for (let right = 0; right < nums.length; right++) {
     sum += nums[right]; // grow on the right
     while (sum >= target) {
-      // while, not if: keep shrinking while it still clears target
-      const windowLength = right - left + 1;
-      if (windowLength < best) {
-        best = windowLength; // record the tightest window before dropping the left item
-      }
+      // while, not if: keep shrinking while it still clears target.
+      // Record the tightest qualifying window before dropping the left item.
+      best = Math.min(best, right - left + 1);
       sum -= nums[left];
       left++;
     }
@@ -96,10 +94,7 @@ export function fewestTxToClear(amounts: number[], threshold: number): number {
   for (let right = 0; right < amounts.length; right++) {
     sum += amounts[right];
     while (sum >= threshold) {
-      const span = right - left + 1;
-      if (span < best) {
-        best = span;
-      }
+      best = Math.min(best, right - left + 1);
       sum -= amounts[left];
       left++;
     }
