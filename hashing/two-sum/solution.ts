@@ -110,16 +110,23 @@ export function firstReplay(eventIds: readonly string[]): string | null {
 // Quick self-check — run with:  npx tsx solution.ts
 // ---------------------------------------------------------------------------
 if (import.meta.url === `file://${process.argv[1]}`) {
+  let fail = 0;
+  const ck = (name: string, cond: boolean): void => {
+    if (!cond) {
+      fail++;
+      console.log("FAIL:", name);
+    }
+  };
   const eq = (a: unknown, b: unknown): boolean => JSON.stringify(a) === JSON.stringify(b);
 
-  console.assert(eq(twoSum([2, 7, 11, 15], 9), [0, 1]), "twoSum example 1");
-  console.assert(eq(twoSum([3, 2, 4], 6), [1, 2]), "twoSum example 2");
-  console.assert(eq(twoSum([3, 3], 6), [0, 1]), "twoSum duplicate case");
-  console.assert(eq(twoSum([-1, -2, -3, -4, -5], -8), [2, 4]), "twoSum negatives");
+  ck("twoSum example 1 -> [0,1]", eq(twoSum([2, 7, 11, 15], 9), [0, 1]));
+  ck("twoSum example 2 -> [1,2]", eq(twoSum([3, 2, 4], 6), [1, 2]));
+  ck("twoSum duplicate [3,3] -> [0,1]", eq(twoSum([3, 3], 6), [0, 1]));
+  ck("twoSum negatives -> [2,4]", eq(twoSum([-1, -2, -3, -4, -5], -8), [2, 4]));
 
-  console.assert(firstReplay(["a", "b", "c"]) === null, "replay: all unique");
-  console.assert(firstReplay(["a", "b", "a", "c"]) === "a", "replay: a first");
-  console.assert(firstReplay(["x", "y", "y", "x"]) === "y", "replay: y first");
+  ck("replay: all unique -> null", firstReplay(["a", "b", "c"]) === null);
+  ck("replay: a first -> a", firstReplay(["a", "b", "a", "c"]) === "a");
+  ck("replay: y first -> y", firstReplay(["x", "y", "y", "x"]) === "y");
 
-  console.log("hashing/two-sum: all checks passed");
+  console.log(fail === 0 ? "hashing/two-sum: all checks passed" : `${fail} FAILED`);
 }
