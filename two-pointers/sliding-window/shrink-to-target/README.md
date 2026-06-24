@@ -1,5 +1,12 @@
 # Sliding window (shrink to target) — grow until good enough, then tighten
 
+> **1 of 3 sliding-window flavors.** New to this? Read the [family overview](../) first —
+> it explains what a "window" is, the goal, and how the three flavors differ.
+> **This flavor:** the window's width is **not fixed** — grow the right edge until the
+> window *reaches* a target (sum ≥ X), then pull the left edge in to the **shortest** run
+> that still qualifies. Numbers must be **non-negative**. Canonical problem: #209 Minimum
+> Size Subarray Sum.
+
 ## TL;DR
 
 **Is it a grow-then-minimize window? Ask these — all "yes" → yes:**

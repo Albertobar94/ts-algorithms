@@ -1,5 +1,11 @@
 # Sliding window (variable, distinct) — grow until it breaks, then shrink
 
+> **1 of 3 sliding-window flavors.** New to this? Read the [family overview](../) first —
+> it explains what a "window" is, the goal, and how the three flavors differ.
+> **This flavor:** the window's width is **not fixed** — grow the right edge, and when a
+> rule breaks (a repeat appears) pull the left edge in until it's valid; you want the
+> **longest** valid run. Canonical problem: #3 Longest Substring Without Repeating Chars.
+
 ## TL;DR
 
 **Is it a grow-then-shrink window? Ask these — all "yes" → yes:**

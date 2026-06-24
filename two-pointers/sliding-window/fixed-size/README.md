@@ -1,9 +1,14 @@
 # Sliding window (fixed size) — slide a k-wide window, don't rebuild it
 
+> **1 of 3 sliding-window flavors.** New to this? Read the [family overview](../) first —
+> it explains what a "window" is, the goal, and how the three flavors differ.
+> **This flavor:** the window's width `k` is **given and never changes**; you slide it and
+> reuse the running total. Canonical problem: #643 Max Average Subarray I.
+
 ## TL;DR
 
 **Is it a fixed-size window? Ask these — all "yes" → yes:**
-1. **Am I scanning every block of the *same* width `k` in a row?** The size is given up front and never changes. (Size depends on the data → not this; that's a *variable* window.)
+1. **Am I scanning every *block* — a run of `k` items sitting next to each other — using the *same* width `k` each time?** The size is given up front and never changes. (Size depends on the data → not this; that's a *variable* window.)
 2. **Do I want one number per block** — its sum / average / max / min — **and then the best block overall?**
 3. **Can I get the next block's answer from the current one in one step**, by adding the item that just entered on the right and subtracting the one that just left on the left? If yes → slide instead of re-summing. **This one is the decider.**
 
