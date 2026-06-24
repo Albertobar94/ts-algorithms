@@ -121,16 +121,25 @@ export function isPalindrome(s: string): boolean {
 // Quick self-check — run with:  npx tsx solution.ts
 // ---------------------------------------------------------------------------
 if (import.meta.url === `file://${process.argv[1]}`) {
+  let fail = 0;
+  const ck = (name: string, cond: boolean): void => {
+    if (!cond) {
+      fail++;
+      console.log("FAIL:", name);
+    }
+  };
   const eq = (a: unknown, b: unknown): boolean => JSON.stringify(a) === JSON.stringify(b);
 
-  console.assert(eq(twoSumSorted([2, 7, 11, 15], 9), [1, 2]), "twoSumSorted example 1");
-  console.assert(eq(twoSumSorted([2, 3, 4], 6), [1, 3]), "twoSumSorted example 2");
-  console.assert(eq(twoSumSorted([-1, 0], -1), [1, 2]), "twoSumSorted negatives");
+  ck("twoSumSorted example 1 -> [1,2]", eq(twoSumSorted([2, 7, 11, 15], 9), [1, 2]));
+  ck("twoSumSorted example 2 -> [1,3]", eq(twoSumSorted([2, 3, 4], 6), [1, 3]));
+  ck("twoSumSorted negatives -> [1,2]", eq(twoSumSorted([-1, 0], -1), [1, 2]));
 
-  console.assert(isPalindrome("A man, a plan, a canal: Panama") === true, "palindrome: panama");
-  console.assert(isPalindrome("race a car") === false, "palindrome: race a car");
-  console.assert(isPalindrome(" ") === true, "palindrome: spaces only");
-  console.assert(isPalindrome("0P") === false, "palindrome: 0P (case/alnum edge)");
+  ck("palindrome: panama -> true", isPalindrome("A man, a plan, a canal: Panama") === true);
+  ck("palindrome: race a car -> false", isPalindrome("race a car") === false);
+  ck("palindrome: spaces only -> true", isPalindrome(" ") === true);
+  ck("palindrome: 0P -> false (case/alnum edge)", isPalindrome("0P") === false);
 
-  console.log("two-pointers/two-markers-both-ends: all checks passed");
+  console.log(
+    fail === 0 ? "two-pointers/two-markers-both-ends: all checks passed" : `${fail} FAILED`,
+  );
 }
