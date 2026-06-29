@@ -2,10 +2,17 @@
 
 Notes for engineers who can **code** (loops, arrays, objects) but never studied algorithms.
 
-Two goals:
+Three goals:
 
-1. **Recognize** which trick a problem needs — so you stop memorizing solutions.
-2. **Read** algorithms in the wild — spot them in a code review, in any stack (frontend or backend), and judge whether they're the right call.
+1. **Recognize** which trick a problem needs — stop memorizing solutions.
+2. **Read** algorithms in the wild — spot them in a code review, any stack (frontend or backend), judge whether they're the right call.
+3. **Choose** the right *data structure + algorithm together* — understand the structure underneath (its physical layout vs the abstraction JS hands you), see **why an algorithm depends on it**, and pick both for the problem in front of you. See [`structures/`](./structures/).
+
+Also collects **front-end & full-stack interview builds** — React components, JS/TS utilities, browser primitives — same recognition-first spirit: spot the pattern, know where bugs hide.
+
+And a **domain axis** — [`domains/`](./domains/) — for business-domain knowledge a Staff engineer must build, not spot. First domain: [`fintech/`](./domains/fintech/) — the building blocks of a payments SaaS that scales (money, ledgers, idempotency…).
+
+> **Voice:** all notes are **extremely concise, grammar sacrificed for concision** — fragments, no filler. Technical substance stays exact; plain words, no bare jargon. See [`CLAUDE.md`](./CLAUDE.md) and the reference note [`paradigms/recursion`](./paradigms/recursion/).
 
 It also collects **front-end & full-stack interview builds** — React components, JS/TS utilities, browser primitives — written in the same recognition-first spirit: spot the pattern, know where the bugs hide.
 
@@ -13,7 +20,8 @@ It also collects **front-end & full-stack interview builds** — React component
 
 ## How slow is too slow? (Big-O, no math)
 
-Big-O answers one question: **when the list gets bigger, how fast does the work pile up?** You're comparing the _shape_ of the code, not crunching numbers.
+Big-O answers one thing: **list gets bigger → how fast does work pile up?** Comparing the _shape_ of code, not crunching numbers.
+Big-O answers one thing: **list gets bigger → how fast does work pile up?** Comparing the _shape_ of code, not crunching numbers.
 
 | Shape of code | Name | Steps for 1,000 items |
 |---|---|---|
@@ -23,19 +31,25 @@ Big-O answers one question: **when the list gets bigger, how fast does the work 
 | Sort it, then one loop | **O(n log n)** | ~10,000 |
 | A loop inside a loop (check every pair) | **O(n²)** | 1,000,000 |
 
-Same list — the loop-in-a-loop does a **million** steps where a single loop does a **thousand**.
+Same list — loop-in-a-loop does a **million** steps where a single loop does a **thousand**.
+Same list — loop-in-a-loop does a **million** steps where a single loop does a **thousand**.
 
-**Use it like this:** the problem tells you the list size. Big list (100,000+)? The loop-in-a-loop is out — reach for a faster shape. Decide this **before** you write code.
+**Use it:** problem gives the list size. Big list (100,000+)? Loop-in-a-loop is out — reach for a faster shape. Decide this **before** writing code.
 
 ---
 
 ## The building blocks
 
-The tricks are built out of these. Plain words:
+The tricks are built from these. Plain words — and each gets a full note under
+[`structures/`](./structures/) explaining what it *really* is (physical layout vs the abstraction
+JS hands you) and **why** the algorithms depend on it (linked as written; Array done):
+The tricks are built from these. Plain words — and each gets a full note under
+[`structures/`](./structures/) explaining what it *really* is (physical layout vs the abstraction
+JS hands you) and **why** the algorithms depend on it (linked as written; Array done):
 
 | Thing | Plain meaning | In JS/TS you'd use |
 |---|---|---|
-| **Array / list** | items in a row, reached by position | `[]`, `arr[i]` |
+| **[Array / list](./structures/array/)** | items in a row, reached by position | `[]`, `arr[i]` |
 | **Hash map** | a labelled drawer — store and find by name, instantly | `Map` or a plain object `{}` |
 | **Set** | a bag that ignores duplicates — "have I seen this before?" | `Set` |
 | **Stack** | a pile — add and remove from the **top** only (last in, first out) | `arr.push()` / `arr.pop()` |
@@ -48,10 +62,9 @@ The tricks are built out of these. Plain words:
 
 ## The tricks (and where they live)
 
-The algorithm axis is grouped into three super-categories. Within them, a trick nested
-inside another is **a more specific case** of it — Sliding Window lives inside
-`two-pointers/` because it's just two markers plus a rule for moving them. Each leaf is a
-folder with its own note.
+Algorithm axis grouped into three super-categories. Trick nested inside another = **more specific
+case** of it — Sliding Window lives in `two-pointers/` because it's just two markers + a rule for
+moving them. Each leaf = a folder with its own note.
 
 ```text
 techniques/                # the moves you apply to data
@@ -60,21 +73,27 @@ techniques/                # the moves you apply to data
   hashing/                 # counting, two-sum, grouping
   prefix-sum/              # running totals — highest altitude, peak so far
   bit-manipulation/        # divide by doubling — and the galloping-search twin
-structures/                # data structures you reach for             (planned)
-  stack/                   # monotonic stack, bracket matching
-  heap/                    # top-k, merge-k, running median
-  trees/                   # depth-first, level-order, BST
-  graphs/                  # BFS, DFS, topological sort, union-find, shortest path
-paradigms/                 # whole problem-solving strategies          (planned)
-  dynamic-programming/     # remember past answers — 1-D, grid, knapsack, ranges
-  recursion-backtracking/  # subsets / orderings, puzzles
+structures/                # the data structures themselves — what each costs + why algos need it
+  array/                   # contiguous block — O(1) index; foundation of the techniques above
+  hashmap/  set/           # store/find by name; "seen it?"
+  stack/  queue/           # LIFO pile; FIFO line
+  heap/                    # always hands you the smallest/biggest next
+  trees/  graphs/          # branching / linked data
+paradigms/                 # whole problem-solving strategies
+  recursion/               # solve via a smaller copy of itself — base case + call stack
+  recursion-backtracking/  # subsets / orderings, puzzles                  (planned)
+  dynamic-programming/     # remember past answers — 1-D, grid, knapsack    (planned)
 ```
 
-Leaf folders (e.g. `techniques/two-pointers/sliding-window/`) get created as you write each
-note. A family with more than one child gets an **overview README** at its folder (see
-`techniques/two-pointers/` and `techniques/search/`).
+Leaf folders (e.g. `techniques/two-pointers/sliding-window/`) created as you write each note. A
+family with >1 child gets an **overview README** at its folder (see `techniques/two-pointers/`,
+`techniques/search/`).
 
-Helpers that show up _inside_ many of these: **Intervals** (start/end ranges), **Greedy** (grab the best-looking option right now).
+`structures/` holds the **pure data structures** (what each is physically + what it costs); the
+algorithms that *depend* on them stay in `techniques/`/`paradigms/`, reached via each structure
+note's **"what it unlocks"** links — so the structure↔algorithm dependency is one click either way.
+
+Helpers showing up _inside_ many of these: **Intervals** (start/end ranges), **Greedy** (grab the best-looking option now).
 
 ---
 
@@ -90,8 +109,7 @@ questions. You often already know the name; the skill is building it right and k
 *when* to reach for it. Here nesting is plain **categorisation**, not "built-on" —
 `debounce` isn't built on `throttle`.
 
-Same note shape as the algorithm notes (TL;DR recognition test → bug-focused pseudocode
-→ real examples). They live under `frontend/`:
+Same note shape as algorithm notes (TL;DR recognition test → bug-focused pseudocode → real examples). Under `frontend/`:
 
 ```text
 frontend/
@@ -112,7 +130,7 @@ extractable logic. Same note shape either way.
 
 ## Notes
 
-The table of contents — and a recognition lookup. Add a row when you write a note.
+Table of contents — and a recognition lookup. Add a row when you write a note.
 
 | Trick | Folder | Reach for it when you see… |
 |---|---|---|
@@ -187,9 +205,8 @@ Solution code (fully commented): [`solution.ts`](./solution.ts).
 
 ### Split families (a trick with sibling sub-notes)
 
-When one trick fans out into variants — e.g. `sliding-window/` → `fixed-size/`,
-`variable-distinct/`, `shrink-to-target/` — add two extra pieces so a child note reads on
-its own:
+Trick fans into variants — e.g. `sliding-window/` → `fixed-size/`, `variable-distinct/`,
+`shrink-to-target/` — add two extra pieces so a child note reads on its own:
 
 - an **overview README** at the parent folder: the shared idea, the goal, the flavors in a
   table + a "which one?" guide, and a link to each child — see
@@ -202,13 +219,13 @@ its own:
 
 ## Universal traps (check these every time)
 
-Before you call any solution done, run the list that bites everyone:
+Before calling any solution done, run the list that bites everyone:
 
 - **Empty input** — zero items. Does the loop still return something sane?
 - **One item** — many two-pointer / window bugs only show up here.
 - **All duplicates / all the same value** — breaks "find the unique one" assumptions.
-- **Already sorted, or reverse-sorted** — often the best and worst case at once.
-- **Off-by-one** — is the end index included or not? Pick one rule and hold it everywhere.
+- **Already sorted, or reverse-sorted** — often best and worst case at once.
+- **Off-by-one** — is the end index included or not? Pick one rule, hold it everywhere.
 - **Negatives / zero** — running totals and "grow the window" logic often assume positives.
 - **Huge input** — does the O(n²) version blow the time limit? (see [Big-O](#how-slow-is-too-slow-big-o-no-math))
 
@@ -216,7 +233,7 @@ Before you call any solution done, run the list that bites everyone:
 
 ## Questions that work on almost anything
 
-When unsure what to ask, these scope fast and signal experience:
+Unsure what to ask? These scope fast and signal experience:
 
 | Ask early | Why it helps |
 |---|---|
@@ -227,15 +244,15 @@ When unsure what to ask, these scope fast and signal experience:
 | "One answer, or all of them?" | One → often greedy. All → usually try-everything. |
 | "Data all up front, or streaming in?" | Streaming needs different tools. |
 
-**Don't** re-ask what the prompt says, or ask "what approach should I use?" Restate the problem in your own words first — that alone catches half the misunderstandings.
+**Don't** re-ask what the prompt says, or ask "what approach should I use?" Restate the problem in your own words first — catches half the misunderstandings.
 
 ---
 
 ## How to practice
 
-The notes only build recognition if you **quiz yourself** — not re-read:
+Notes only build recognition if you **quiz yourself** — not re-read:
 
-1. Pick a problem. Before solving, run a note's **TL;DR questions** against it and guess the trick.
-2. Cover the pseudocode and rebuild it from memory; peek only when stuck. Pay attention to the ⚠️ bug lines.
+1. Pick a problem. Before solving, run a note's **TL;DR questions** against it, guess the trick.
+2. Cover the pseudocode, rebuild from memory; peek only when stuck. Watch the ⚠️ bug lines.
 3. Found the trick in real code (a PR, a library)? Add it under that note's **"Where you'll meet it."**
 4. Got one wrong? That note's **TL;DR test** is missing a question — add the one that would've tipped you off.
