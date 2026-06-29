@@ -104,6 +104,10 @@ same 8 values in balanced order → `height() === 4`.
 - **[Recursion](../../paradigms/recursion/)** — traversal (**in-order**, **pre-order**,
   **post-order**) is textbook recursion: "do the node, then recurse on each subtree." The whole shape
   is *solve a smaller copy of the same problem on each child*.
+- **[Binary-tree techniques](../../techniques/trees/)** — the classic interview walks built on this
+  structure: [max depth](../../techniques/trees/max-depth/) (#104), [level order](../../techniques/trees/level-order/)
+  (#102, BFS), [right side view](../../techniques/trees/right-side-view/) (#199),
+  [count complete](../../techniques/trees/count-complete/) (#222), [validate BST](../../techniques/trees/validate-bst/) (#98).
 - **Ordered map / sorted set** (name-only) — `std::map`, Java `TreeMap`, the structure behind
   "iterate keys in order" and **range queries** (`[A, B]`). Backed by a self-balancing BST.
 - **Database indexes** (name-only) — a **B-tree** (a fat, disk-friendly cousin of the BST) is how an
