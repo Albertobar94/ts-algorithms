@@ -12,7 +12,7 @@ Also collects **front-end & full-stack interview builds** — React components, 
 
 And a **domain axis** — [`domains/`](./domains/) — for business-domain knowledge a Staff engineer must build, not spot. First domain: [`fintech/`](./domains/fintech/) — the building blocks of a payments SaaS that scales (money, ledgers, idempotency…).
 
-> **Voice:** all notes are **extremely concise, grammar sacrificed for concision** — fragments, no filler. Technical substance stays exact; plain words, no bare jargon. See [`CLAUDE.md`](./CLAUDE.md) and the reference note [`paradigms/recursion`](./paradigms/recursion/).
+> **Voice:** all notes are **extremely concise, grammar sacrificed for concision** — fragments, no filler. Technical substance stays exact; plain words, no bare jargon. See [`CLAUDE.md`](./CLAUDE.md) and the reference note [`paradigms/recursion/basics`](./paradigms/recursion/basics/).
 
 It also collects **front-end & full-stack interview builds** — React components, JS/TS utilities, browser primitives — written in the same recognition-first spirit: spot the pattern, know where the bugs hide.
 
@@ -71,7 +71,9 @@ moving them. Each leaf = a folder with its own note.
 techniques/                # the moves you apply to data
   two-pointers/            # opposite-ends, sliding window, fast/slow, merge two
   linked-list/             # rewire pointers — reverse, m-n reversal, flatten multilevel
-  search/                  # binary search; exponential/galloping, on-the-answer (planned)
+  stack/                   # LIFO-driven — min-remove-brackets, queue-from-two-stacks
+  trees/                   # binary-tree walks — depth, level-order, side view, validate BST
+  search/                  # binary search (find-target, first-last); exponential/galloping (planned)
   hashing/                 # counting, two-sum, grouping
   prefix-sum/              # running totals — highest altitude, peak so far
   bit-manipulation/        # divide by doubling — and the galloping-search twin
@@ -83,7 +85,7 @@ structures/                # the data structures themselves — what each costs 
   heap/                    # always hands you the smallest/biggest next
   trees/  graphs/          # branching / linked data
 paradigms/                 # whole problem-solving strategies
-  recursion/               # solve via a smaller copy of itself — base case + call stack
+  recursion/               # solve via a smaller copy of itself — basics + quickselect (#215)
   recursion-backtracking/  # subsets / orderings, puzzles                  (planned)
   dynamic-programming/     # remember past answers — 1-D, grid, knapsack    (planned)
 ```
@@ -144,7 +146,8 @@ Table of contents — and a recognition lookup. Add a row when you write a note.
 | Opposite ends — trapping rain | [`techniques/two-pointers/opposite-ends/trapping-rain`](./techniques/two-pointers/opposite-ends/trapping-rain/) | bar heights + "water *on top of all* bars after rain"; leftMax/rightMax, commit the shorter side (#42) |
 | Divide by doubling | [`techniques/bit-manipulation/divide-two-integers`](./techniques/bit-manipulation/divide-two-integers/) | "no `*` `/` `%`"; a count/quotient up to ~2³¹ (too big to loop one-by-one); doubling a step until it overshoots; exponential search |
 | Running total, keep the best | [`techniques/prefix-sum/highest-altitude`](./techniques/prefix-sum/highest-altitude/) | step-by-step changes + "highest / lowest / peak so far"; running balance / altitude / concurrency; cumulative tally |
-| Binary search (halve a sorted range) | [`techniques/search/binary-search/find-target`](./techniques/search/binary-search/find-target/) | **sorted** data + find a value or a boundary; "first/last position where…"; huge input needing O(log n); `git bisect` |
+| Binary search — find target | [`techniques/search/binary-search/find-target`](./techniques/search/binary-search/find-target/) | **sorted** data + find a value or a yes/no boundary; huge input needing O(log n); `git bisect` |
+| Binary search — first & last position | [`techniques/search/binary-search/first-last-position`](./techniques/search/binary-search/first-last-position/) | **sorted** + a **repeated** value's start/end, a count, or an insertion point (lower/upper bound) (#34/#35) |
 | Sliding window (fixed size) | [`techniques/two-pointers/sliding-window/fixed-size`](./techniques/two-pointers/sliding-window/fixed-size/) | a window of **fixed width `k`** + "max/avg/sum of any `k` in a row"; slide don't re-sum; rolling metric / moving average |
 | Sliding window (variable, distinct) | [`techniques/two-pointers/sliding-window/variable-distinct`](./techniques/two-pointers/sliding-window/variable-distinct/) | **longest** run obeying a rule ("no repeats", "≤ K distinct"); grow til it breaks, shrink the left to fix |
 | Sliding window (shrink to target) | [`techniques/two-pointers/sliding-window/shrink-to-target`](./techniques/two-pointers/sliding-window/shrink-to-target/) | **shortest** run that *reaches* a target (sum ≥ X), **non-negative** numbers; grow til good, shrink to the minimum |
@@ -152,6 +155,14 @@ Table of contents — and a recognition lookup. Add a row when you write a note.
 | Linked list — reverse | [`techniques/linked-list/reverse`](./techniques/linked-list/reverse/) | "reverse the list"; flip every `next` (save it first!); the prev/curr/next dance (#206) |
 | Linked list — M-to-N reversal | [`techniques/linked-list/mn-reversal`](./techniques/linked-list/mn-reversal/) | "reverse only positions m..n, in place, one pass"; dummy head + head-insertion splice (#92) |
 | Linked list — flatten multilevel DLL | [`techniques/linked-list/merge-multilevel-dll`](./techniques/linked-list/merge-multilevel-dll/) | doubly-linked nodes with a `child` list; splice inline depth-first, fix `prev` too (#430) |
+| Stack — min remove brackets | [`techniques/stack/min-remove-brackets`](./techniques/stack/min-remove-brackets/) | "delete the fewest brackets to make it valid"; stack the unmatched **positions** (#1249) |
+| Stack — queue from two stacks | [`techniques/stack/queue-from-two-stacks`](./techniques/stack/queue-from-two-stacks/) | "FIFO using only LIFO stacks"; pour `in`→`out`, lazily; amortized O(1) (#232) |
+| QuickSelect (kth largest) | [`paradigms/recursion/quickselect`](./paradigms/recursion/quickselect/) | "k-th smallest/largest" without a full sort; partition, recurse **one** side; avg O(n) (#215) |
+| Trees — max depth | [`techniques/trees/max-depth`](./techniques/trees/max-depth/) | "how deep / tallest path"; DFS `1 + max(left, right)` (and the #111 min-depth one-child trap) |
+| Trees — level order (BFS) | [`techniques/trees/level-order`](./techniques/trees/level-order/) | "each level as a list" / "process level by level"; queue + snapshot the level size (#102) |
+| Trees — right side view | [`techniques/trees/right-side-view`](./techniques/trees/right-side-view/) | "what you'd see from the side"; BFS, keep the last node per level (#199) |
+| Trees — count complete | [`techniques/trees/count-complete`](./techniques/trees/count-complete/) | count a **complete** tree faster than O(n); perfect-subtree `2^h−1` shortcut → O(log²n) (#222) |
+| Trees — validate BST | [`techniques/trees/validate-bst`](./techniques/trees/validate-bst/) | "is it a valid BST"; carry inherited `(low, high)` bounds, not just parent compares (#98) |
 | Debounce (fire once after quiet) | [`frontend/rate-limiting/debounce`](./frontend/rate-limiting/debounce/) | bursts of calls + you only want the **final** state; search-as-you-type, autosave, resize-end, file-watch reload |
 | Throttle (steady rate during burst) | [`frontend/rate-limiting/throttle`](./frontend/rate-limiting/throttle/) | bursts of calls + react **during** the burst at a fixed cadence; scroll/mousemove/drag handlers, outbound API rate-limit |
 | Event emitter (pub-sub by name) | [`frontend/events/event-emitter`](./frontend/events/event-emitter/) | one part announces "X happened", many react + (un)subscribe over time, linked by a **name** not a direct call; DOM events, app/domain event bus, sockets |
