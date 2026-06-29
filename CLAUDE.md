@@ -120,6 +120,13 @@ the self-check directly (the `import.meta.url` guard still fires). Fallback: a t
 in node (`/tmp/*.mjs`). Cover LeetCode examples + adversarial edges; every committed solution passes
 its checks.
 
+## Guide docs (non-trick)
+
+Some topics are **methods/tooling guides**, not tricks — no recognition test, no
+`solution.ts`. They live at `<topic>/README.md` (e.g. `performance/`) and keep the repo
+voice (plain words, ground every term, tables + ⚠️ on gotchas, depth only on hard
+parts). Link them from the root README near the related concept, not in the Notes table.
+
 ## Git
 
 - Direct push to `main` blocked by guard hook — work on a branch, open a PR.
