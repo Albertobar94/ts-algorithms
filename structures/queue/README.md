@@ -81,7 +81,9 @@ O(n) `shift()` queue and they blow up to O(n²):
   back, pop stale ones from the back, drop the expired max from the front — each in O(1).
 - **BFS / level-order traversal** (LeetCode **#102** binary tree level order, **#1091** shortest
   path in a binary matrix) — visit nodes in waves; the frontier *is* a queue, FIFO guarantees you
-  finish a level before the next.
+  finish a level before the next. (Built in [`techniques/trees/level-order`](../../techniques/trees/level-order/).)
+- **[Queue from two stacks](../../techniques/stack/queue-from-two-stacks/)** — when only LIFO stacks
+  are allowed, two of them reproduce this FIFO behaviour (LeetCode **#232**).
 - **Task scheduling & the event-loop task queue** — callbacks (timers, I/O, messages) join the
   back, the loop pulls from the front in arrival order; FIFO is why `setTimeout(fn, 0)` runs after
   already-queued work.

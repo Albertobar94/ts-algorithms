@@ -73,7 +73,12 @@ time. Nothing in a stack ever forces a shift, because you never open a hole in t
 Name-only (built elsewhere or not yet):
 - **Balanced brackets** — push each opener, pop+match on each closer (LeetCode **#20** Valid
   Parentheses). The canonical "why LIFO": the most-recently-opened bracket must close first. (Built
-  in [`solution.ts`](./solution.ts) as `isBalanced`.)
+  in [`solution.ts`](./solution.ts) as `isBalanced`.) The harder bracket problems live in the
+  [`techniques/stack`](../../techniques/stack/) family — e.g.
+  [minimum remove to make valid](../../techniques/stack/min-remove-brackets/) (#1249, stack the
+  unmatched positions).
+- **[Queue from two stacks](../../techniques/stack/queue-from-two-stacks/)** — pour one stack into
+  another to flip LIFO into FIFO, lazily (LeetCode **#232**).
 - **Monotonic stack / next-greater-element** — keep a stack that stays sorted; pop smaller ones as
   a bigger value arrives (LeetCode **#496**, **#739**).
 - **Expression evaluation** — evaluate Reverse Polish Notation by pushing operands, popping on each
