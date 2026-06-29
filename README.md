@@ -1,4 +1,4 @@
-# ts-algorithms
+# Fullstack Engineering Interview Questions
 
 Notes for engineers who can **code** (loops, arrays, objects) but never studied algorithms.
 
@@ -6,6 +6,8 @@ Two goals:
 
 1. **Recognize** which trick a problem needs — so you stop memorizing solutions.
 2. **Read** algorithms in the wild — spot them in a code review, in any stack (frontend or backend), and judge whether they're the right call.
+
+It also collects **front-end & full-stack interview builds** — React components, JS/TS utilities, browser primitives — written in the same recognition-first spirit: spot the pattern, know where the bugs hide.
 
 ---
 
@@ -76,15 +78,17 @@ Helpers that show up _inside_ many of these: **Intervals** (start/end ranges), *
 
 ---
 
-## Front-end primitives (GFE 75)
+## Front-end & full-stack interviews (GFE 75 + components)
 
 A **second axis**, kept separate on purpose — it sits at the top level next to
 `techniques/` (it is *not* under them). The folders above are algorithm patterns — you
 navigate them by *recognising which trick* a problem needs, and nesting means "a more
 specific case of the parent." This axis is different: the [GreatFrontEnd 75](https://www.greatfrontend.com/interviews/gfe75)
-classics — JS/browser primitives you **implement from scratch** (you already know the
-name; the skill is building it right and knowing *when* to reach for it). Here nesting
-is plain **categorisation**, not "built-on" — `debounce` isn't built on `throttle`.
+classics and friends — **JS/TS utility primitives** you implement from scratch (debounce,
+throttle), **UI component builds** (a paginated Data Table), and **JS/TS knowledge**
+questions. You often already know the name; the skill is building it right and knowing
+*when* to reach for it. Here nesting is plain **categorisation**, not "built-on" —
+`debounce` isn't built on `throttle`.
 
 Same note shape as the algorithm notes (TL;DR recognition test → bug-focused pseudocode
 → real examples). They live under `frontend/`:
@@ -93,13 +97,16 @@ Same note shape as the algorithm notes (TL;DR recognition test → bug-focused p
 frontend/
   rate-limiting/      # debounce, throttle  — tame a flood of calls
   events/             # event emitter  — pub-sub, fire callbacks by name
+  pagination/         # data-table  — slice a list into pages (UI component build)
   promises/           # promise.all, promisify, promise.race…   (planned)
   function-utils/     # curry, memoize, bind, once…             (planned)
   data-utils/         # deepClone, deepEqual, flatten, classNames…  (planned)
 ```
 
-Scope: implement-from-scratch JS primitives only (the ones that fit a `solution.ts`).
-UI-build questions ("build a tabs component") are out — different format.
+Scope: GFE-style JS/TS primitives, UI component builds, and JS/TS knowledge questions. A
+primitive ships a `solution.ts` (+ self-check); a component build ships its component
+file(s) and fixtures (e.g. `DataTable.tsx`, `data.ts`) plus a `solution.ts` for any pure,
+extractable logic. Same note shape either way.
 
 ---
 
@@ -120,6 +127,7 @@ The table of contents — and a recognition lookup. Add a row when you write a n
 | Debounce (fire once after quiet) | [`frontend/rate-limiting/debounce`](./frontend/rate-limiting/debounce/) | bursts of calls + you only want the **final** state; search-as-you-type, autosave, resize-end, file-watch reload |
 | Throttle (steady rate during burst) | [`frontend/rate-limiting/throttle`](./frontend/rate-limiting/throttle/) | bursts of calls + react **during** the burst at a fixed cadence; scroll/mousemove/drag handlers, outbound API rate-limit |
 | Event emitter (pub-sub by name) | [`frontend/events/event-emitter`](./frontend/events/event-emitter/) | one part announces "X happened", many react + (un)subscribe over time, linked by a **name** not a direct call; DOM events, app/domain event bus, sockets |
+| Pagination (slice a list into pages) | [`frontend/pagination/data-table`](./frontend/pagination/data-table/) | fixed page size + Prev/Next + "page X of Y"; "show N per page"; API offset/limit; jump to a specific page (vs infinite scroll) |
 
 > The first two rows are the **same question** (Two Sum) under opposite inputs: **sorted → two pointers** (O(1) space), **unsorted → hashmap** (O(n) space). Recognizing *which* is the whole skill. Likewise the last two (debounce / throttle) are the **same flood** under opposite needs: **want only the end → debounce**, **want steady updates → throttle**.
 >

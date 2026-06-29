@@ -1,7 +1,9 @@
-# ts-algorithms — project conventions
+# fullstack-engineering-interview-questions — project conventions
 
-Personal algorithm-pattern reference. Goal: **recognition over memorization** — train
-the trigger that maps a problem (or real code in any stack) to the right trick.
+Personal full-stack interview-prep reference — algorithm patterns, front-end component
+builds, JS/TS utility primitives, and JS/TS knowledge questions. Goal: **recognition over
+memorization** — train the trigger that maps a problem (or real code in any stack) to the
+right trick.
 
 Audience voice: an engineer who codes with frameworks but never studied algorithms or
 much math. **Plain words, no bare jargon** — ground every term the first time (explain
@@ -18,10 +20,14 @@ real example problems last**. Reference note: `techniques/search/binary-search/f
 `techniques/search/binary-search/`, `techniques/hashing/`…), grouped into the super-categories
 `techniques/`, `structures/`, `paradigms/` — navigated by *recognising which trick*; nesting
 means "a more specific case of the parent."
-(2) Front-end primitives (GFE 75) under `frontend/<category>/<trick>/` — JS/browser
-utilities you implement from scratch; nesting is plain categorisation, not "built-on."
-Scope of the frontend axis: implement-from-scratch primitives that fit a `solution.ts`;
-UI-build questions are out. Reference: `frontend/rate-limiting/debounce/README.md`.
+(2) Front-end & full-stack interview solutions under `frontend/<category>/<trick>/` — the
+GFE 75 classics and friends; nesting is plain categorisation, not "built-on." This axis
+spans **implement-from-scratch JS/TS primitives** (ship a `solution.ts` — e.g. debounce),
+**UI component builds** (React/TSX, possibly multi-file — ship the component file(s), plus
+a `solution.ts` for any extractable pure logic — e.g. the Data Table's pagination), and
+**JS/TS knowledge questions**. Same note shape throughout. References:
+`frontend/rate-limiting/debounce/README.md` (primitive),
+`frontend/pagination/data-table/README.md` (component build).
 
 1. **Title** — `# <Trick> — <one-line plain gist>`
 2. **## TL;DR**
@@ -63,6 +69,7 @@ Where you'll meet it (examples).
 - Lean on idiomatic JS built-ins where they don't change the Big-O — `Math.max`/`Math.min` for a running best, `arr.reduce` to seed a sum, `Map`/`Set` for membership. But keep the trick's **core step explicit** when collapsing it would hide the idea or blow up complexity (e.g. the O(1) window slide `sum += entrant − leaver` must stay a slide, never a per-window `reduce` → O(n·k)).
 - Include the real LeetCode solution **and** a far-apart twin from a different domain.
 - End with a runnable self-check guarded by `if (import.meta.url === \`file://${process.argv[1]}\`)`.
+- **Component builds** (React/TSX) ship the component file(s) + any fixtures (e.g. `DataTable.tsx`, `data.ts`); keep the pure, testable logic in a `solution.ts` beside them so the self-check still covers the bug-prone math (the `.tsx` itself needs a React/JSX toolchain to run, so it stays a thin shell over that primitive).
 
 ## Verifying solutions
 
