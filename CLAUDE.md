@@ -27,6 +27,9 @@ edge cases, bug consequences). Reference note: `paradigms/recursion/README.md`.
 Each trick at `<family>/<trick>/` — `README.md` + `solution.ts`. README order: **questions first,
 bug-focused pseudocode middle, real example problems last**. Reference:
 `techniques/search/binary-search/find-target/README.md`.
+Each trick at `<family>/<trick>/` — `README.md` + `solution.ts`. README order: **questions first,
+bug-focused pseudocode middle, real example problems last**. Reference:
+`techniques/search/binary-search/find-target/README.md`.
 
 **Three axes.** (1) Algorithm patterns under `techniques/` (e.g.
 `techniques/search/binary-search/`, `techniques/hashing/`…), grouped into super-categories

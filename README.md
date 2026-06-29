@@ -1,7 +1,9 @@
 # Fullstack Engineering Interview Questions
+# Fullstack Engineering Interview Questions
 
 Notes for engineers who can **code** (loops, arrays, objects) but never studied algorithms.
 
+Three goals:
 Three goals:
 
 1. **Recognize** which trick a problem needs — stop memorizing solutions.
@@ -19,6 +21,7 @@ And a **domain axis** — [`domains/`](./domains/) — for business-domain knowl
 ## How slow is too slow? (Big-O, no math)
 
 Big-O answers one thing: **list gets bigger → how fast does work pile up?** Comparing the _shape_ of code, not crunching numbers.
+Big-O answers one thing: **list gets bigger → how fast does work pile up?** Comparing the _shape_ of code, not crunching numbers.
 
 | Shape of code | Name | Steps for 1,000 items |
 |---|---|---|
@@ -29,6 +32,7 @@ Big-O answers one thing: **list gets bigger → how fast does work pile up?** Co
 | A loop inside a loop (check every pair) | **O(n²)** | 1,000,000 |
 
 Same list — loop-in-a-loop does a **million** steps where a single loop does a **thousand**.
+Same list — loop-in-a-loop does a **million** steps where a single loop does a **thousand**.
 
 **Use it:** problem gives the list size. Big list (100,000+)? Loop-in-a-loop is out — reach for a faster shape. Decide this **before** writing code.
 
@@ -36,6 +40,9 @@ Same list — loop-in-a-loop does a **million** steps where a single loop does a
 
 ## The building blocks
 
+The tricks are built from these. Plain words — and each gets a full note under
+[`structures/`](./structures/) explaining what it *really* is (physical layout vs the abstraction
+JS hands you) and **why** the algorithms depend on it (linked as written; Array done):
 The tricks are built from these. Plain words — and each gets a full note under
 [`structures/`](./structures/) explaining what it *really* is (physical layout vs the abstraction
 JS hands you) and **why** the algorithms depend on it (linked as written; Array done):
