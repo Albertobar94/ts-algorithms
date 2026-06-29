@@ -158,7 +158,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
   console.log(
     fail === 0
-      ? "paradigms/recursion: all checks passed"
+      ? "paradigms/recursion/basics: all checks passed"
       : `${fail} FAILED`,
   );
 }
