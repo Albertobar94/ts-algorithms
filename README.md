@@ -50,6 +50,7 @@ JS hands you) and **why** the algorithms depend on it (linked as written; Array 
 | Thing | Plain meaning | In JS/TS you'd use |
 |---|---|---|
 | **[Array / list](./structures/array/)** | items in a row, reached by position | `[]`, `arr[i]` |
+| **[Linked list](./structures/linked-list/)** | items chained by pointers — splice cheap, indexing slow | node objects `{ val, next }` |
 | **Hash map** | a labelled drawer — store and find by name, instantly | `Map` or a plain object `{}` |
 | **Set** | a bag that ignores duplicates — "have I seen this before?" | `Set` |
 | **Stack** | a pile — add and remove from the **top** only (last in, first out) | `arr.push()` / `arr.pop()` |
@@ -69,12 +70,14 @@ moving them. Each leaf = a folder with its own note.
 ```text
 techniques/                # the moves you apply to data
   two-pointers/            # opposite-ends, sliding window, fast/slow, merge two
+  linked-list/             # rewire pointers — reverse, m-n reversal, flatten multilevel
   search/                  # binary search; exponential/galloping, on-the-answer (planned)
   hashing/                 # counting, two-sum, grouping
   prefix-sum/              # running totals — highest altitude, peak so far
   bit-manipulation/        # divide by doubling — and the galloping-search twin
 structures/                # the data structures themselves — what each costs + why algos need it
   array/                   # contiguous block — O(1) index; foundation of the techniques above
+  linked-list/             # nodes chained by pointers — O(1) splice, O(n) index
   hashmap/  set/           # store/find by name; "seen it?"
   stack/  queue/           # LIFO pile; FIFO line
   heap/                    # always hands you the smallest/biggest next
@@ -135,13 +138,20 @@ Table of contents — and a recognition lookup. Add a row when you write a note.
 | Trick | Folder | Reach for it when you see… |
 |---|---|---|
 | Two Sum (hashmap) | [`techniques/hashing/two-sum`](./techniques/hashing/two-sum/) | **unsorted** list + "find a pair summing to X"; "have I seen this?"; dedupe by key; replay / idempotency guard |
-| Opposite ends (two pointers) | [`techniques/two-pointers/opposite-ends`](./techniques/two-pointers/opposite-ends/) | **sorted** list + "find a pair"; palindrome / reverse-in-place; max area between two walls |
+| Opposite ends — pair sum | [`techniques/two-pointers/opposite-ends/pair-sum`](./techniques/two-pointers/opposite-ends/pair-sum/) | **sorted** list + "find a pair summing to X"; sum-vs-target picks the end to drop; 3Sum/closest |
+| Opposite ends — palindrome | [`techniques/two-pointers/opposite-ends/palindrome`](./techniques/two-pointers/opposite-ends/palindrome/) | "reads the same both ways"; compare the two end chars; *almost* palindrome (one deletion, #680) |
+| Opposite ends — max area | [`techniques/two-pointers/opposite-ends/max-area`](./techniques/two-pointers/opposite-ends/max-area/) | bar heights + "most water *between two* walls"; area = width × **shorter** wall; move the shorter (#11) |
+| Opposite ends — trapping rain | [`techniques/two-pointers/opposite-ends/trapping-rain`](./techniques/two-pointers/opposite-ends/trapping-rain/) | bar heights + "water *on top of all* bars after rain"; leftMax/rightMax, commit the shorter side (#42) |
 | Divide by doubling | [`techniques/bit-manipulation/divide-two-integers`](./techniques/bit-manipulation/divide-two-integers/) | "no `*` `/` `%`"; a count/quotient up to ~2³¹ (too big to loop one-by-one); doubling a step until it overshoots; exponential search |
 | Running total, keep the best | [`techniques/prefix-sum/highest-altitude`](./techniques/prefix-sum/highest-altitude/) | step-by-step changes + "highest / lowest / peak so far"; running balance / altitude / concurrency; cumulative tally |
 | Binary search (halve a sorted range) | [`techniques/search/binary-search/find-target`](./techniques/search/binary-search/find-target/) | **sorted** data + find a value or a boundary; "first/last position where…"; huge input needing O(log n); `git bisect` |
 | Sliding window (fixed size) | [`techniques/two-pointers/sliding-window/fixed-size`](./techniques/two-pointers/sliding-window/fixed-size/) | a window of **fixed width `k`** + "max/avg/sum of any `k` in a row"; slide don't re-sum; rolling metric / moving average |
 | Sliding window (variable, distinct) | [`techniques/two-pointers/sliding-window/variable-distinct`](./techniques/two-pointers/sliding-window/variable-distinct/) | **longest** run obeying a rule ("no repeats", "≤ K distinct"); grow til it breaks, shrink the left to fix |
 | Sliding window (shrink to target) | [`techniques/two-pointers/sliding-window/shrink-to-target`](./techniques/two-pointers/sliding-window/shrink-to-target/) | **shortest** run that *reaches* a target (sum ≥ X), **non-negative** numbers; grow til good, shrink to the minimum |
+| Fast & slow pointers | [`techniques/two-pointers/fast-slow`](./techniques/two-pointers/fast-slow/) | "does it **loop** / where / what's the **middle** / find the **duplicate**"; one cursor steps 2× the other (#141/#142/#876/#287) |
+| Linked list — reverse | [`techniques/linked-list/reverse`](./techniques/linked-list/reverse/) | "reverse the list"; flip every `next` (save it first!); the prev/curr/next dance (#206) |
+| Linked list — M-to-N reversal | [`techniques/linked-list/mn-reversal`](./techniques/linked-list/mn-reversal/) | "reverse only positions m..n, in place, one pass"; dummy head + head-insertion splice (#92) |
+| Linked list — flatten multilevel DLL | [`techniques/linked-list/merge-multilevel-dll`](./techniques/linked-list/merge-multilevel-dll/) | doubly-linked nodes with a `child` list; splice inline depth-first, fix `prev` too (#430) |
 | Debounce (fire once after quiet) | [`frontend/rate-limiting/debounce`](./frontend/rate-limiting/debounce/) | bursts of calls + you only want the **final** state; search-as-you-type, autosave, resize-end, file-watch reload |
 | Throttle (steady rate during burst) | [`frontend/rate-limiting/throttle`](./frontend/rate-limiting/throttle/) | bursts of calls + react **during** the burst at a fixed cadence; scroll/mousemove/drag handlers, outbound API rate-limit |
 | Event emitter (pub-sub by name) | [`frontend/events/event-emitter`](./frontend/events/event-emitter/) | one part announces "X happened", many react + (un)subscribe over time, linked by a **name** not a direct call; DOM events, app/domain event bus, sockets |

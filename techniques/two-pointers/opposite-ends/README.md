@@ -1,104 +1,62 @@
 # Opposite ends — two markers converging from both sides
 
-## TL;DR
-
-**Is it the both-ends trick? Ask these — all yes → yes:**
-1. **Is the data sorted (or symmetric)?** Either ordered small→large, *or* something you can read from both sides (a string, a palindrome). (No order, no symmetry → not this.)
-2. **Am I after a pair, or comparing the two ends?** Two numbers that sum to `X`, or "do the ends match / how much fits between them" (palindrome, max area). (Comparing one item to a target → that's binary search.)
-3. **Does comparing the two ends tell me which end to move next?** Look at both ends — does the result say "move the left in" or "move the right in"? If the comparison doesn't point at a side to drop → not this. **This one is the decider.**
-
-**Before you code, pin down:** is the input sorted — ascending or descending? is the answer 1-indexed or 0-indexed (LeetCode #167 is **1-indexed** — the classic slip)? exactly one pair, or all pairs (all → you must skip duplicates)? for palindrome — which characters count, and is it case-sensitive?
-
-**The lines where bugs hide** (details in *How it works*):
-`while left < right` (NOT `<=` — that lets you pair an element with itself) · the **1-indexing** on #167 · the data **must** be sorted, or the whole trick is invalid.
-
----
+**Start here.** This folder is one idea — put a marker at **each end** of the data and walk
+them toward the middle — split into **four flavors**. If "opposite ends" is new, read this
+whole page first; then pick a flavor. The four sub-folders
+([`pair-sum`](./pair-sum/), [`palindrome`](./palindrome/), [`max-area`](./max-area/),
+[`trapping-rain`](./trapping-rain/)) each have the recognition test, the bug-prone lines, and
+runnable code.
 
 ## What it is
-Put one marker at each end of the list and walk them toward the middle. Each step you
-**compare the two ends**, and the result tells you which marker to move inward. Because
-the data is sorted (or symmetric), that comparison is trustworthy — moving a marker can
-only push the result one known direction, so you never have to look back.
+Put one marker at the **start** and one at the **end**. Each step you **compare the two ends**,
+and the result tells you which marker to move inward. Because the data is **sorted** (so a
+bigger/smaller comparison is trustworthy) or **symmetric** (a string you can read from both
+sides), moving a marker can only push the result one known direction — so you never look back.
+The two markers together cross the list once: one pass, **O(n)**, no extra memory.
 
-`numbers = [2, 7, 11, 15]`, looking for a pair that sums to `9`:
-- `left=2`, `right=15` → `2 + 15 = 17 > 9` → too big, pull `right` in → `right=11`
-- `left=2`, `right=11` → `2 + 11 = 13 > 9` → still too big, pull `right` in → `right=7`
-- `left=2`, `right=7` → `2 + 7 = 9` → found it. Positions (1-indexed) → `[1, 2]`.
+Tiny example — *pair summing to `9`* in `[2, 7, 11, 15]`:
+- `left=2`, `right=15` → `17 > 9`, too big → pull `right` in.
+- `left=2`, `right=11` → `13 > 9`, still too big → pull `right` in.
+- `left=2`, `right=7` → `9` → found it.
 
-## What you track
-- `left` — the marker at the start, moving right.
-- `right` — the marker at the end, moving left.
-- the **comparison each step** (sum vs target, or end char vs end char) that decides which marker moves.
+## The goal (why it exists)
+The obvious way checks every pair — a loop inside a loop, about `n²` steps (1,000 items → a
+million). When the data is **ordered or symmetric**, two converging markers get the same answer
+in **one pass** (`n` steps), because each comparison rules out a whole batch of pairs at once
+instead of one at a time.
 
-## How it works
-Pseudocode (Two Sum II — sorted input). The three ⚠️ lines are where every bug hides —
-read those slowly; the rest is filler.
+## The four flavors (this is the fork to recognize)
+Same two-marker skeleton — they differ only in **what the comparison decides**:
 
-```ts
-let left = 0;                          // marker at the small end
-let right = sorted.length - 1;         // ⚠️ the data MUST be sorted; marker at the big end.
-                                       //    The whole trick rests on this — on unsorted
-                                       //    input the comparison lies and you'll silently
-                                       //    return wrong pairs.
+| Flavor | The data | The comparison each step | Which marker moves | Canonical problem |
+|---|---|---|---|---|
+| **[Pair sum](./pair-sum/)** | sorted numbers | sum of the two ends vs `target` | move **one** end (the helpful one) | #167 Two Sum II |
+| **[Palindrome](./palindrome/)** | a string (symmetric) | are the two end chars **equal**? | move **both** ends inward | #125 Valid Palindrome, #680 Almost Palindrome |
+| **[Max area](./max-area/)** | bar heights | which wall is **shorter**? | move the **shorter** wall | #11 Container With Most Water |
+| **[Trapping rain](./trapping-rain/)** | bar heights | which side's running **max** is smaller? | move that (settled) side | #42 Trapping Rain Water |
 
-while (left < right) {                 // ⚠️ < , not <= . With <= the two markers can land
-                                       //    on the SAME index and you'd pair an element with
-                                       //    itself — which the problem forbids.
+## Which one? (decision guide)
+- **Sorted** list + "find a pair summing to X" → **pair-sum**.
+- A **string/sequence** + "reads the same both ways" (allow ≤1 deletion → Almost) → **palindrome**.
+- **Bar heights** + "most water between two lines" (area = width × *shorter* wall) → **max-area**.
+- **Bar heights** + "water trapped *on top of* the bars after rain" → **trapping-rain**.
 
-  const pairSum = sorted[left] + sorted[right];   // total of the two ends right now
+A way to keep the two height ones apart: **max-area** is water *between* two chosen walls (pick
+the best pair); **trapping-rain** is water *on top of every bar* (sum across all of them).
 
-  if (pairSum === target) {
-    return [left + 1, right + 1];      // ⚠️ +1 — LeetCode #167 wants 1-BASED indices.
-                                       //    Returning [left, right] is the classic slip.
-  }
+## What they all share
+- Two markers, **left** at the start and **right** at the end, that only move **inward**.
+- Each item is visited once → **O(n)** total, **O(1)** extra space.
+- A comparison of the two ends that **points at a side to drop** — and is trustworthy only
+  because the data is sorted or symmetric. Without that structure the comparison lies.
 
-  if (pairSum < target) {
-    left++;                            // need a BIGGER total → move left to a larger number
-  } else {
-    right--;                           // need a SMALLER total → move right to a smaller number
-  }
-}
-
-// markers met → no pair (for #167 the problem guarantees one exists)
-```
-
-Why it can't miss a pair: sorted order means moving `left` right *only raises* the sum
-and moving `right` left *only lowers* it. When the sum is too big, `sorted[right]` paired
-with anything to its left is **also** too big — so dropping `right` discards only
-impossible options. One sweep covers them all.
-
-Lock these three in and it's correct: **data sorted**, **`while left < right`**, **`+1` for 1-indexing on #167**.
-
-## Picture
-```mermaid
-flowchart TD
-    A[left = start, right = end] --> B{left < right?}
-    B -- no --> F[stop: no pair]
-    B -- yes --> C[pairSum = sorted left + sorted right]
-    C --> D{compare pairSum to target}
-    D -- equal --> E[return left, right]
-    D -- too small --> G[left++  → bigger]
-    D -- too big --> H[right--  → smaller]
-    G --> B
-    H --> B
-```
-
-## Where you'll meet it (practice + recognition)
-
-**On LeetCode (and similar platforms):**
-- **#167 Two Sum II (sorted)** — sorted, 1-indexed array; compare the end-to-end `sum` to `target`, move the helpful marker. (This note's code.)
-- **#125 Valid Palindrome** — compare the two end characters for *equality*: equal → step both inward; different → not a palindrome. Same skeleton, but the comparison moves *both* markers, not one. (See `isPalindrome` in [`solution.ts`](./solution.ts).)
-- **#11 Container With Most Water** — `left` and `right` are two walls; the area is limited by the *shorter* wall, so move the shorter one inward hunting for a taller pair.
-- **#15 3Sum** — sort first, then for each fixed number run the both-ends sweep on the rest to find the other two.
-
-**Real life / other platforms:**
-- Reversing a buffer in place by swapping the two ends and walking inward.
-- Checking a sequence reads the same both ways (palindrome-style validation).
-- Two-sided trimming of a sorted range — chop from both ends until a condition holds.
-- The two cursors converging in a merge step.
-
-**Looks like it but ISN'T:** *"two numbers in an **unsorted** array that sum to a target"* — with no order the comparison can't tell you which end to drop, so it's the hashmap [`two-sum`](../../hashing/two-sum/README.md), not this. Same question, different trick — picked by whether the input is sorted.
+## Looks like it but ISN'T
+- Two markers both going **forward** bounding a contiguous run → that's
+  [`sliding-window`](../sliding-window/), not opposite ends (those don't converge).
+- A pair in an **unsorted** array → no order, so the comparison can't tell you which end to
+  drop; reach for the hashmap [`hashing/two-sum`](../../hashing/two-sum/). Same question,
+  different trick — decided by whether the input is sorted.
 
 ---
 
-Solution code (both disguises, fully commented): [`solution.ts`](./solution.ts).
+Pick a flavor: [`pair-sum`](./pair-sum/) · [`palindrome`](./palindrome/) · [`max-area`](./max-area/) · [`trapping-rain`](./trapping-rain/).
