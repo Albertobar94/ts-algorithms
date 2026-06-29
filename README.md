@@ -1,9 +1,7 @@
 # Fullstack Engineering Interview Questions
-# Fullstack Engineering Interview Questions
 
 Notes for engineers who can **code** (loops, arrays, objects) but never studied algorithms.
 
-Three goals:
 Three goals:
 
 1. **Recognize** which trick a problem needs — stop memorizing solutions.
@@ -15,6 +13,8 @@ Also collects **front-end & full-stack interview builds** — React components, 
 And a **domain axis** — [`domains/`](./domains/) — for business-domain knowledge a Staff engineer must build, not spot. First domain: [`fintech/`](./domains/fintech/) — the building blocks of a payments SaaS that scales (money, ledgers, idempotency…).
 
 > **Voice:** all notes are **extremely concise, grammar sacrificed for concision** — fragments, no filler. Technical substance stays exact; plain words, no bare jargon. See [`CLAUDE.md`](./CLAUDE.md) and the reference note [`paradigms/recursion`](./paradigms/recursion/).
+
+It also collects **front-end & full-stack interview builds** — React components, JS/TS utilities, browser primitives — written in the same recognition-first spirit: spot the pattern, know where the bugs hide.
 
 ---
 
@@ -99,13 +99,15 @@ Helpers showing up _inside_ many of these: **Intervals** (start/end ranges), **G
 
 ## Front-end & full-stack interviews (GFE 75 + components)
 
-A **second axis**, kept separate on purpose — top level, next to `techniques/` (*not* under them).
-Folders above are algorithm patterns — navigate by *recognising which trick*, nesting = "more
-specific case." This axis differs: the [GreatFrontEnd 75](https://www.greatfrontend.com/interviews/gfe75)
-classics + friends — **JS/TS utility primitives** built from scratch (debounce, throttle), **UI
-component builds** (paginated Data Table), **JS/TS knowledge** questions. You often already know
-the name; the skill is building it right + knowing *when* to reach for it. Here nesting = plain
-**categorisation**, not "built-on" — `debounce` isn't built on `throttle`.
+A **second axis**, kept separate on purpose — it sits at the top level next to
+`techniques/` (it is *not* under them). The folders above are algorithm patterns — you
+navigate them by *recognising which trick* a problem needs, and nesting means "a more
+specific case of the parent." This axis is different: the [GreatFrontEnd 75](https://www.greatfrontend.com/interviews/gfe75)
+classics and friends — **JS/TS utility primitives** you implement from scratch (debounce,
+throttle), **UI component builds** (a paginated Data Table), and **JS/TS knowledge**
+questions. You often already know the name; the skill is building it right and knowing
+*when* to reach for it. Here nesting is plain **categorisation**, not "built-on" —
+`debounce` isn't built on `throttle`.
 
 Same note shape as algorithm notes (TL;DR recognition test → bug-focused pseudocode → real examples). Under `frontend/`:
 
@@ -114,35 +116,15 @@ frontend/
   rate-limiting/      # debounce, throttle  — tame a flood of calls
   events/             # event emitter  — pub-sub, fire callbacks by name
   pagination/         # data-table  — slice a list into pages (UI component build)
-  tables/             # HTML-<table> rendering (overview: how/gotchas/alternatives) + popular-timeslots (pivot, UI build)
   promises/           # promise.all, promisify, promise.race…   (planned)
   function-utils/     # curry, memoize, bind, once…             (planned)
   data-utils/         # deepClone, deepEqual, flatten, classNames…  (planned)
 ```
 
-Scope: GFE-style JS/TS primitives, UI component builds, JS/TS knowledge questions. Primitive ships
-a `solution.ts` (+ self-check); component build ships its component file(s) + fixtures (e.g.
-`DataTable.tsx`, `data.ts`) plus a `solution.ts` for pure extractable logic. Same shape either way.
-
----
-
-## Domains (building what a SaaS needs)
-
-A **third axis** — [`domains/`](./domains/). The axes above ask *which trick?* (`techniques/`) or
-*which tool + what cost?* (`structures/`). This one asks *building a real product in this domain,
-what pieces must you get right and how does each fail?* Navigate by **domain knowledge**, not trick
-recognition. Notes here use the **building-block shape** (see [Note template](#note-template)).
-
-First domain — [`fintech/`](./domains/fintech/): what a Staff engineer must build for a payments SaaS
-that scales. Two tracks — `architecture/` (money, double-entry ledger, idempotency, reconciliation,
-compliance, scaling) and `algorithms/` (fintech-flavored DSA that links back to `techniques/`).
-
-```text
-domains/
-  fintech/
-    architecture/   # money-representation, ledger-double-entry, idempotency-keys (✅) + 8 planned
-    algorithms/     # order-book (heap), running balance (prefix-sum), velocity windows…  (planned)
-```
+Scope: GFE-style JS/TS primitives, UI component builds, and JS/TS knowledge questions. A
+primitive ships a `solution.ts` (+ self-check); a component build ships its component
+file(s) and fixtures (e.g. `DataTable.tsx`, `data.ts`) plus a `solution.ts` for any pure,
+extractable logic. Same note shape either way.
 
 ---
 
@@ -164,33 +146,19 @@ Table of contents — and a recognition lookup. Add a row when you write a note.
 | Throttle (steady rate during burst) | [`frontend/rate-limiting/throttle`](./frontend/rate-limiting/throttle/) | bursts of calls + react **during** the burst at a fixed cadence; scroll/mousemove/drag handlers, outbound API rate-limit |
 | Event emitter (pub-sub by name) | [`frontend/events/event-emitter`](./frontend/events/event-emitter/) | one part announces "X happened", many react + (un)subscribe over time, linked by a **name** not a direct call; DOM events, app/domain event bus, sockets |
 | Pagination (slice a list into pages) | [`frontend/pagination/data-table`](./frontend/pagination/data-table/) | fixed page size + Prev/Next + "page X of Y"; "show N per page"; API offset/limit; jump to a specific page (vs infinite scroll) |
-| Group-by (flat list → Map of buckets) | [`techniques/hashing/grouping`](./techniques/hashing/grouping/) | split a flat list into groups by a derived key, **keep the items** per bucket; Group Anagrams (#49); `Object.groupBy` / lodash `_.groupBy`; SQL `GROUP BY … array_agg`; (vs counting = a tally; vs pivot = a rectangular grid) |
-| Pivot / group-by (flat rows → grid) | [`frontend/tables/popular-timeslots`](./frontend/tables/popular-timeslots/) | flat `{row-key, col-key}` records reshaped into a 2D table; one axis → columns, other → rows; **rectangular with blanks** for missing cells (vs ragged group-by); calendar/heatmap, SQL `PIVOT`, pandas `pivot_table` |
-| Recursion (a smaller copy of itself) | [`paradigms/recursion`](./paradigms/recursion/) | **nested / branching** data (tree, nested JSON, file system); base case + shrink toward it + combine; tree depth (#104), merge sort, deep-clone/flatten; (vs a plain loop for flat data; vs **DP** when subproblems overlap) |
-| **Array** (the contiguous block — a *structure*) | [`structures/array`](./structures/array/) | picking the *data structure*: need **O(1) index** (binary search, two-pointers, sliding-window, prefix-sum all require it) + end-append; rarely insert/remove in the middle; (vs **linked list** = O(1) mid-insert but O(n) index) |
-| **Hash map** (by-key drawer — a *structure*) | [`structures/hashmap`](./structures/hashmap/) | find by **name/key** in O(1); counting, dedupe, memoization, two-sum complement; key→value, **no order** (vs array by position; vs set = key-only) |
-| **Set** (dedupe bag — a *structure*) | [`structures/set`](./structures/set/) | "have I **seen** this?" O(1) membership; `visited` guard, distinct-window, dedupe (vs array `includes` O(n); vs hash map = key→value) |
-| **Stack** (LIFO pile — a *structure*) | [`structures/stack`](./structures/stack/) | **most-recent first**; brackets, undo, iterative DFS, expression eval; the call stack itself (vs queue = FIFO) |
-| **Queue** (FIFO line — a *structure*) | [`structures/queue`](./structures/queue/) | **first-come first-served**; BFS / level-order, scheduling, event loop; use a **ring buffer**, not `arr.shift()` O(n) (vs stack = LIFO) |
-| **Heap** (min/max-first — a *structure*) | [`structures/heap`](./structures/heap/) | "give me the **smallest/biggest next**"; top-k, merge-k, running median, Dijkstra; a tree packed in a flat array (vs sorted array; vs BST) |
-| **Tree / BST** (ordered branching — a *structure*) | [`structures/trees`](./structures/trees/) | **ordered** search + range + sorted scan, O(log n) *if balanced*; in-order = sorted (vs heap = min/max only; vs hash map = unordered) |
-| **Graph** (dots + lines — a *structure*) | [`structures/graphs`](./structures/graphs/) | things **connected** to things, cycles allowed; BFS/DFS, topological sort, shortest path, union-find; needs a `visited` set (vs tree = no cycles) |
-| **Money representation** (fintech *building block*) | [`domains/fintech/architecture/money-representation`](./domains/fintech/architecture/money-representation/) | storing / summing / splitting currency; integers (cents) not floats; penny-perfect split; anything reconciled against a bank or auditor |
-| **Double-entry ledger** (fintech *building block*) | [`domains/fintech/architecture/ledger-double-entry`](./domains/fintech/architecture/ledger-double-entry/) | balances that change + "why is this balance this?" must be answerable; money **moves**, never appears/vanishes; append-only, real/regulated money |
-| **Idempotency keys** (fintech *building block*) | [`domains/fintech/architecture/idempotency-keys`](./domains/fintech/architecture/idempotency-keys/) | an effect that **costs money** + a caller that can retry; running twice is wrong; safe retries / exactly-once charges |
 
-> First two rows = **same question** (Two Sum), opposite inputs: **sorted → two pointers** (O(1) space), **unsorted → hashmap** (O(n) space). Recognizing *which* is the whole skill. Likewise last two (debounce / throttle) = **same flood**, opposite needs: **want only the end → debounce**, **want steady updates → throttle**.
+> The first two rows are the **same question** (Two Sum) under opposite inputs: **sorted → two pointers** (O(1) space), **unsorted → hashmap** (O(n) space). Recognizing *which* is the whole skill. Likewise the last two (debounce / throttle) are the **same flood** under opposite needs: **want only the end → debounce**, **want steady updates → throttle**.
 >
-> Three **sliding-window** rows = one trick, three window rules: **fixed** width (slide a `k`-wide block), **grow-til-bad then shrink** (longest distinct run), **grow-til-good then shrink** (shortest run hitting a target). Spotting which rule applies is the recognition skill — the [sliding-window overview](./techniques/two-pointers/sliding-window/) explains the shared idea, the goal, which flavor to reach for.
+> The three **sliding-window** rows are one trick under three window rules: **fixed** width (slide a `k`-wide block), **grow-til-bad then shrink** (longest distinct run), **grow-til-good then shrink** (shortest run that hits a target). Spotting which rule applies is the recognition skill — the [sliding-window overview](./techniques/two-pointers/sliding-window/) explains the shared idea, the goal, and which flavor to reach for.
 
 ---
 
 ## Note template
 
-Every `<family>/<trick>/README.md` follows this shape. Order is deliberate: **questions first**
-(recognize it + what to nail down + where bugs live), **bug-focused pseudocode** middle, **real
-example problems last**. **Extremely concise — grammar sacrificed for concision, plain words, no
-bare jargon, every term grounded.** [`techniques/search/binary-search/find-target`](./techniques/search/binary-search/find-target/)
+Every `<family>/<trick>/README.md` follows this shape. The order is deliberate:
+**questions first** (how to recognize it + what to nail down + where bugs live), the
+**bug-focused pseudocode** in the middle, **real example problems last**. Plain words
+throughout — ground every term, no bare jargon. [`techniques/search/binary-search/find-target`](./techniques/search/binary-search/find-target/)
 is the reference note.
 
 ````markdown
@@ -240,30 +208,12 @@ Solution code (fully commented): [`solution.ts`](./solution.ts).
 Trick fans into variants — e.g. `sliding-window/` → `fixed-size/`, `variable-distinct/`,
 `shrink-to-target/` — add two extra pieces so a child note reads on its own:
 
-- an **overview README** at the parent folder: shared idea, the goal, the flavors in a table +
-  "which one?" guide, link to each child — see
+- an **overview README** at the parent folder: the shared idea, the goal, the flavors in a
+  table + a "which one?" guide, and a link to each child — see
   [`techniques/two-pointers/sliding-window`](./techniques/two-pointers/sliding-window/);
-- a **context banner** atop each child — a blockquote *between title and TL;DR*: "N of M flavors —
-  read the overview first", a one-line "this flavor: …", the canonical problem — see
-  [`techniques/two-pointers/sliding-window/fixed-size`](./techniques/two-pointers/sliding-window/fixed-size/).
-
-### Structure notes (`structures/`)
-
-Data structures get a **sibling shape** — you *pick* a tool, you don't *spot* a trick. Same
-skeleton, swapped middle: reach-for-it test → **what it really is (abstraction vs the metal)** →
-**what it costs (and why)** → **what it unlocks** (links to the algorithm notes that need it) →
-picture → where you'll meet it. See the [`structures/` overview](./structures/) and the exemplar
-[`structures/array`](./structures/array/).
-
-### Building-block notes (`domains/`)
-
-Domain building blocks (ledgers, idempotency, money types) are things you *build*, not tricks you
-*spot* — a third shape, adapted from the structure shape with the middle swapped for **failure
-modes** (money/compliance bugs are the point): reach-for-it test → **what it really is** → **what it
-costs & risks** (the wrong way → the consequence) → **how to build it** (pseudocode, ⚠️ bug lines) →
-picture → where you'll meet it (real systems · libraries/standards · looks-like-but-isn't sibling).
-See the [`domains/fintech`](./domains/fintech/) roadmap and the exemplar
-[`money-representation`](./domains/fintech/architecture/money-representation/).
+- a **context banner** at the very top of each child — a blockquote *between the title and
+  the TL;DR*: "N of M flavors — read the overview first", a one-line "this flavor: …", and
+  the canonical problem — see [`techniques/two-pointers/sliding-window/fixed-size`](./techniques/two-pointers/sliding-window/fixed-size/).
 
 ---
 

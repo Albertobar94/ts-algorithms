@@ -21,6 +21,15 @@ edge cases, bug consequences). Reference note: `paradigms/recursion/README.md`.
   last-in-first-out pile"). Plain ≠ verbose: ground the term in a fragment, move on.
 - **Terse everywhere; real depth only on the genuinely hard part**, inline.
 - **Untouched:** code blocks, mermaid, commits, PRs, security/destructive warnings — normal prose.
+Personal full-stack interview-prep reference — algorithm patterns, front-end component
+builds, JS/TS utility primitives, and JS/TS knowledge questions. Goal: **recognition over
+memorization** — train the trigger that maps a problem (or real code in any stack) to the
+right trick.
+
+Audience voice: an engineer who codes with frameworks but never studied algorithms or
+much math. **Plain words, no bare jargon** — ground every term the first time (explain
+Big-O as loops, "Stack = last-in-first-out pile", etc.). Terse for general/navigation;
+real depth only on the genuinely hard part, inline.
 
 ## Note format (REQUIRED — the preferred shape)
 
@@ -29,7 +38,7 @@ bug-focused pseudocode middle, real example problems last**. Reference:
 `techniques/search/binary-search/find-target/README.md`.
 Each trick at `<family>/<trick>/` — `README.md` + `solution.ts`. README order: **questions first,
 bug-focused pseudocode middle, real example problems last**. Reference:
-`techniques/search/binary-search/find-target/README.md`.
+`techniques/search/techniques/search/binary-search/find-target/README.md`.
 
 **Three axes.** (1) Algorithm patterns under `techniques/` (e.g.
 `techniques/search/binary-search/`, `techniques/hashing/`…), grouped into super-categories
