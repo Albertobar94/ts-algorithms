@@ -114,6 +114,49 @@ export function isBalanced(input: string): boolean {
   return stack.isEmpty();
 }
 
+/**
+ * Another USE where "the newest kept item gets undone" = LIFO. Here a plain
+ * array is the stack (push to the end, pop the end -- exactly what this note
+ * means by "a JS array used at one end IS a stack"). We build the result by
+ * pushing, and let the undo token pop the most recent kept item.
+ *
+ *  A) Backspace String Compare (LeetCode #844): '#' = backspace.
+ *     "ab#c" -> "ac";  "ab##" -> "".  Equal after applying backspaces?
+ *  B) Simplify Path (LeetCode #71): '..' pops the last folder, '.'/'' skip.
+ *     "/a/./b/../../c/" -> "/c".  Same "undo the newest" move, different token.
+ */
+export function backspaceCompare(s: string, t: string): boolean {
+  const build = (str: string): string => {
+    const stack: string[] = []; // the array IS the stack
+    for (const ch of str) {
+      if (ch !== "#") {
+        stack.push(ch);
+      } else if (stack.length > 0) {
+        stack.pop(); // backspace removes the most recent kept char
+      }
+    }
+    return stack.join("");
+  };
+  return build(s) === build(t);
+}
+
+export function simplifyPath(path: string): string {
+  const stack: string[] = [];
+  for (const segment of path.split("/")) {
+    if (segment === "" || segment === ".") {
+      continue; // collapsed slash or "stay here"
+    }
+    if (segment === "..") {
+      if (stack.length > 0) {
+        stack.pop(); // up one folder — no-op at root
+      }
+      continue;
+    }
+    stack.push(segment);
+  }
+  return "/" + stack.join("/");
+}
+
 // ---------------------------------------------------------------------------
 // Quick self-check — run with:  node structures/stack/solution.ts
 // ---------------------------------------------------------------------------
@@ -163,6 +206,15 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   ck('isBalanced("([{}])") true (nested)', isBalanced("([{}])") === true);
   ck('isBalanced("a(b)c") true (ignores non-brackets)', isBalanced("a(b)c") === true);
   ck('isBalanced(")(") false (closer first)', isBalanced(")(") === false);
+
+  // --- backspaceCompare / simplifyPath: "undo the newest" LIFO ----------------
+  ck("backspace ab#c == ad#c", backspaceCompare("ab#c", "ad#c") === true);
+  ck("backspace ab## == c#d#", backspaceCompare("ab##", "c#d#") === true);
+  ck("backspace a#c != b", backspaceCompare("a#c", "b") === false);
+  ck("backspace leading # no-op", backspaceCompare("#a#c", "c") === true);
+  ck("simplify /home//foo/ -> /home/foo", simplifyPath("/home//foo/") === "/home/foo");
+  ck("simplify /../ -> /", simplifyPath("/../") === "/");
+  ck("simplify /a/./b/../../c/ -> /c", simplifyPath("/a/./b/../../c/") === "/c");
 
   console.log(fail === 0 ? "structures/stack: all checks passed" : `${fail} FAILED`);
 }

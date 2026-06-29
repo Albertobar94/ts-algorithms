@@ -19,9 +19,9 @@ The recognition trigger is **how the two pointers travel**:
 
 | Movement | How they move | Reach for it when | Canonical problem |
 |---|---|---|---|
-| **[Opposite ends](./opposite-ends/)** | start at both ends, walk **inward** | **sorted/symmetric** data + a pair, or compare the two ends | #167 Two Sum II, #125 Valid Palindrome |
+| **[Opposite ends](./opposite-ends/)** | start at both ends, walk **inward** | **sorted/symmetric** data + a pair, or compare the two ends | #167, #125, #11, #42 (see its 4 flavors) |
 | **[Sliding window](./sliding-window/)** | both go **forward**, bounding a contiguous run | "best/longest/shortest **run in a row** that …" | #643, #3, #209 (see its 3 flavors) |
-| **Fast & slow** _(planned)_ | both forward, **different speeds** | cycle detection, find the middle, dedupe-in-place | #141 Linked List Cycle, #876 Middle |
+| **[Fast & slow](./fast-slow/)** | both forward, **different speeds** | cycle detection, find the middle, find a duplicate | #141/#142 Cycle, #876 Middle, #287 Duplicate |
 | **Merge two** _(planned)_ | one cursor **per sequence** | walk two **sorted** inputs together | merge sorted arrays, #349 Intersection |
 
 ## Which one? (decision guide)
@@ -43,4 +43,4 @@ The recognition trigger is **how the two pointers travel**:
 
 ---
 
-Pick a movement: [`opposite-ends`](./opposite-ends/) · [`sliding-window`](./sliding-window/) · fast & slow _(planned)_ · merge two _(planned)_.
+Pick a movement: [`opposite-ends`](./opposite-ends/) · [`sliding-window`](./sliding-window/) · [`fast-slow`](./fast-slow/) · merge two _(planned)_.

@@ -24,6 +24,7 @@ Swap the structure and the *same code* changes complexity class. So the real ski
 | This structure… | makes these cheap… | …which unlocks |
 |---|---|---|
 | **[Array](./array/)** | O(1) index, append | [binary search](../techniques/search/binary-search/find-target/), [two-pointers](../techniques/two-pointers/opposite-ends/), [sliding window](../techniques/two-pointers/sliding-window/), [prefix-sum](../techniques/prefix-sum/highest-altitude/) |
+| **[Linked list](./linked-list/)** | O(1) splice at a node you hold | [reverse](../techniques/linked-list/reverse/), [m-n reversal](../techniques/linked-list/mn-reversal/), [flatten multilevel](../techniques/linked-list/merge-multilevel-dll/), [fast & slow](../techniques/two-pointers/fast-slow/) |
 | **[Hash map](./hashmap/)** | O(1) lookup/insert by key | [two-sum](../techniques/hashing/two-sum/), [group-by](../techniques/hashing/grouping/), counting, dedupe, memoization |
 | **[Set](./set/)** | O(1) membership | dedupe, `visited` guard ([recursion](../paradigms/recursion/), graph traversal), [distinct window](../techniques/two-pointers/sliding-window/variable-distinct/) |
 | **[Stack](./stack/)** | O(1) push/pop one end | DFS, bracket matching, monotonic-stack, undo |
@@ -40,6 +41,7 @@ Swap the structure and the *same code* changes complexity class. So the real ski
 | Structure | Plain gist | Headline cost | Status |
 |---|---|---|---|
 | **[Array](./array/)** | items packed in a row, reached by position | O(1) index, **O(n) middle insert** | ✅ done |
+| **[Linked list](./linked-list/)** | nodes chained by pointers | O(1) splice, **O(n) index** | ✅ done |
 | **[Hash map](./hashmap/)** | a labelled drawer — store/find by name | O(1) avg, **O(n) on a bad day** (collisions/rehash) | ✅ done |
 | **[Set](./set/)** | a bag that ignores duplicates | O(1) "seen it?" | ✅ done |
 | **[Stack](./stack/)** | a pile — push/pop the **top** (LIFO) | O(1) both | ✅ done |

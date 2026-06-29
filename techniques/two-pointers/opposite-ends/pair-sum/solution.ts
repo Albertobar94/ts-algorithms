@@ -1,15 +1,16 @@
 /**
  * ============================================================================
- *  THE TRICK: two markers starting at both ends, walking toward the middle
+ *  THE TRICK: two markers from both ends of a SORTED list, find a pair sum
  * ============================================================================
  *
- *  Put one pointer at the start and one at the end. Compare. Move the side that
- *  brings you closer to the goal. Works because the data is sorted or symmetric,
- *  so the comparison reliably tells you which way to go. One pass, no extra memory.
+ *  Put one pointer at the small end, one at the big end. Add them. Too big ->
+ *  the largest number can't help, drop `right`. Too small -> drop `left`. Each
+ *  move discards a whole batch of impossible pairs, so one sweep is exhaustive.
+ *  Works ONLY because the array is sorted. One pass, no extra memory.
  *
- *  Two problems that look unrelated but share the SAME mechanic live here:
- *    A) Two Sum II (sorted) — pair that sums to a target   (LeetCode #167)
- *    B) Valid Palindrome    — reads the same both ways      (LeetCode #125)
+ *  Two problems that share the SAME both-ends sweep live here:
+ *    A) Two Sum II (sorted)  — exact pair that sums to a target   (LeetCode #167)
+ *    B) 3Sum Closest         — triple whose sum is NEAREST target (LeetCode #16)
  *
  * ----------------------------------------------------------------------------
  *  A) TWO SUM II — INPUT ARRAY IS SORTED  (LeetCode #167)
@@ -34,8 +35,7 @@
  *    Sorted order means moving `left` right only RAISES the sum, moving `right`
  *    left only LOWERS it. If the sum is too big, then numbers[right] paired with
  *    anything still to its left is also too big — so discarding `right` throws
- *    away only impossible candidates. Each step eliminates a whole batch, so one
- *    sweep is exhaustive.
+ *    away only impossible candidates. Each step eliminates a whole batch.
  *
  *  Why this beats the hashmap here:
  *    The array is already sorted, so we get O(1) extra space instead of O(n).
@@ -72,49 +72,52 @@ export function twoSumSorted(numbers: number[], target: number): [number, number
 
 /**
  * ----------------------------------------------------------------------------
- *  B) VALID PALINDROME  (LeetCode #125 — the far-apart twin)
+ *  B) 3SUM CLOSEST  (LeetCode #16 — the far-apart twin)
  * ----------------------------------------------------------------------------
  *  Problem:
- *    Given a string, consider only alphanumeric characters and ignore case.
- *    Return true if it reads the same forwards and backwards.
+ *    Given an integer array `nums` and a `target`, return the sum of the three
+ *    integers whose total is CLOSEST to `target`. Exactly one such sum exists.
  *
  *  Examples:
- *    "A man, a plan, a canal: Panama"  -> true   ("amanaplanacanalpanama")
- *    "race a car"                      -> false
- *    " "                               -> true   (no alphanumerics -> empty -> palindrome)
+ *    nums = [-1,2,1,-4], target = 1  -> 2   (-1 + 2 + 1)
+ *    nums = [0,0,0],     target = 1  -> 0
  *
- *  Same both-ends skeleton, different decision:
- *    Two Sum II moves ONE pointer based on magnitude. Here we compare the two end
- *    characters for EQUALITY: equal -> step BOTH inward; different -> not a
- *    palindrome. We also skip characters that don't count (punctuation, spaces).
+ *  Same both-ends sweep, wrapped in one extra loop:
+ *    Sort first. Fix each index `i`, then run the pair-sum sweep on the rest:
+ *    too small -> left++, too big -> right--. But instead of needing an EXACT
+ *    hit, we keep the running sum nearest to target. The sort is what lets the
+ *    "move one end" decision be trustworthy — identical mechanic to Two Sum II.
  *
  *  Complexity:
- *    Time  O(n) — each character is visited at most once.
- *    Space O(1) — two indices; no cleaned-up copy of the string is built.
+ *    Time  O(n^2) — one outer fix, an O(n) sweep inside.  Space O(1) (in place).
  */
-export function isPalindrome(s: string): boolean {
-  const isAlphanumeric = (c: string): boolean => /[a-z0-9]/i.test(c);
+export function threeSumClosest(nums: number[], target: number): number {
+  const sorted = [...nums].sort((a, b) => a - b); // copy so we don't mutate the caller's array
+  let closest = sorted[0] + sorted[1] + sorted[2];
 
-  let left = 0;
-  let right = s.length - 1;
+  for (let i = 0; i < sorted.length - 2; i++) {
+    let left = i + 1;
+    let right = sorted.length - 1;
 
-  while (left < right) {
-    while (left < right && !isAlphanumeric(s[left])) {
-      left++;
+    while (left < right) {
+      const sum = sorted[i] + sorted[left] + sorted[right];
+
+      if (Math.abs(sum - target) < Math.abs(closest - target)) {
+        closest = sum;
+      }
+
+      if (sum === target) {
+        return sum; // can't get closer than exact
+      }
+      if (sum < target) {
+        left++;
+      } else {
+        right--;
+      }
     }
-    while (left < right && !isAlphanumeric(s[right])) {
-      right--;
-    }
-
-    if (s[left].toLowerCase() !== s[right].toLowerCase()) {
-      return false;
-    }
-
-    left++;
-    right--;
   }
 
-  return true;
+  return closest;
 }
 
 // ---------------------------------------------------------------------------
@@ -134,12 +137,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   ck("twoSumSorted example 2 -> [1,3]", eq(twoSumSorted([2, 3, 4], 6), [1, 3]));
   ck("twoSumSorted negatives -> [1,2]", eq(twoSumSorted([-1, 0], -1), [1, 2]));
 
-  ck("palindrome: panama -> true", isPalindrome("A man, a plan, a canal: Panama") === true);
-  ck("palindrome: race a car -> false", isPalindrome("race a car") === false);
-  ck("palindrome: spaces only -> true", isPalindrome(" ") === true);
-  ck("palindrome: 0P -> false (case/alnum edge)", isPalindrome("0P") === false);
+  ck("threeSumClosest example 1 -> 2", threeSumClosest([-1, 2, 1, -4], 1) === 2);
+  ck("threeSumClosest all zeros -> 0", threeSumClosest([0, 0, 0], 1) === 0);
+  ck("threeSumClosest exact hit -> 3", threeSumClosest([0, 1, 2], 3) === 3);
 
   console.log(
-    fail === 0 ? "techniques/two-pointers/opposite-ends: all checks passed" : `${fail} FAILED`,
+    fail === 0 ? "techniques/two-pointers/opposite-ends/pair-sum: all checks passed" : `${fail} FAILED`,
   );
 }

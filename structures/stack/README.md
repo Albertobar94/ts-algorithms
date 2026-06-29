@@ -79,6 +79,9 @@ Name-only (built elsewhere or not yet):
 - **Expression evaluation** — evaluate Reverse Polish Notation by pushing operands, popping on each
   operator (LeetCode **#150**).
 - **Undo / redo** — each action pushed; undo = pop the latest. Newest-first is exactly LIFO.
+- **Backspace string compare / path simplify** — build a result by pushing; an undo token (`#`
+  backspace, `..` up-a-dir) pops the most recent kept item (LeetCode **#844**, **#71**). (Built in
+  [`solution.ts`](./solution.ts) as `backspaceCompare` / `simplifyPath`.)
 - **Browser back button** — pages pushed as you navigate; Back pops the most recent.
 - **Iterative DFS** — explicit stack replacing the call stack (see above).
 
@@ -120,4 +123,5 @@ flowchart TB
 
 ---
 Solution code — `Stack<T>` (push / pop / peek / isEmpty / size over an array) + `isBalanced` proving
-why brackets need LIFO, runnable self-check: [`solution.ts`](./solution.ts).
+why brackets need LIFO, plus `backspaceCompare` / `simplifyPath` (the "undo the newest" use),
+runnable self-check: [`solution.ts`](./solution.ts).
